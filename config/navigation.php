@@ -17,4 +17,8 @@ return [
         'label' => 'Contact',
         'route' => 'contact',
     ],
+    [
+        'label' => 'Blog',
+        'route' => 'blog',
+    ],
 ];
