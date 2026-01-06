@@ -3,27 +3,30 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ $title ?? 'Login' }}</title>
+    <title>{{ $title ?? 'Authentication' }}</title>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
 </head>
 
-<body class="bg-zinc-950 text-zinc-100 min-h-screen antialiased selection:bg-indigo-500/30">
+<body class="bg-zinc-950 text-zinc-100 min-h-screen antialiased selection:bg-indigo-500/30 flex flex-col justify-center">
     
+    <div class="max-w-md mx-auto w-full px-4">
         @if(session('error'))
-    <div style="background: #f8d7da; color: #842029; padding: 10px; margin-bottom: 15px; border-radius: 5px;">
-        {{ session('error') }}
-    </div>
-    @endif
+            <div class="mb-4 p-4 rounded-lg bg-red-500/10 border border-red-500/50 text-red-400 text-sm">
+                {{ session('error') }}
+            </div>
+        @endif
 
-@if(session('success'))
-    <div style="background: #d1e7dd; color: #0f5132; padding: 10px; margin-bottom: 15px; border-radius: 5px;">
-        {{ session('success') }}
+        @if(session('success'))
+            <div class="mb-4 p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/50 text-emerald-400 text-sm">
+                {{ session('success') }}
+            </div>
+        @endif
     </div>
-@endif
+
     {{ $slot }}
-    @livewireScripts
 
+    @livewireScripts
 </body>
 </html>

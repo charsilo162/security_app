@@ -14,6 +14,9 @@ class BlogPostTable extends Component
     public int $page = 1;
     public int $lastPage = 1;
     public array $allCategories = [];
+    public bool $openAiModal = false;
+    public string $aiTopic = '';
+    public bool $isGenerating = false;
     // public array $selectedCategories = [];
     public ?string $selectedCategory = null;
 
@@ -186,6 +189,41 @@ public function closeEdit()
             $this->dispatch('notify', type: 'error', message: 'Failed to delete post.');
         }
     }
+
+
+    public function generateAiPost()
+        {
+            $this->validate([
+                'aiTopic' => 'required|min:5'
+            ]);
+
+            $this->isGenerating = true;
+
+            try {
+                // Calling your specific endpoint: http://localhost:8001/ai/blog/generate
+                // Assuming your ApiService can handle full URLs or is configured for this port
+                $response = $this->api->post('ai/blog/generate', [
+                    'topic' => $this->aiTopic
+                ]);
+//dd($response);
+                if (isset($response['uuid']) || isset($response['data'])) {
+                    $this->dispatch('notify', type: 'success', message: 'AI Content Generated Successfully!');
+                    $this->reset(['openAiModal', 'aiTopic', 'isGenerating']);
+                    $this->fetchPosts(); // Refresh the table
+                } else {
+                    $this->dispatch('notify', type: 'error', message: 'Generation failed. Check API.');
+                }
+            } catch (\Exception $e) {
+                $this->dispatch('notify', type: 'error', message: 'Error: ' . $e->getMessage());
+            } finally {
+                $this->isGenerating = false;
+            }
+        }
+
+    public function closeAiModal()
+        {
+            $this->reset(['openAiModal', 'aiTopic', 'isGenerating']);
+        }
     public function render()
     {
         return view('livewire.dashboard.blog-post-table');

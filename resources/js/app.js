@@ -1,33 +1,27 @@
 import './bootstrap';
-// import Alpine from 'alpinejs'
+document.addEventListener('alpine:init', () => {
+    Alpine.store('ui', {
+        sidebarOpen: false,
+        dark: localStorage.theme === 'dark',
 
-// window.Alpine = Alpine
+        toggleSidebar() {
+            this.sidebarOpen = !this.sidebarOpen
+        },
 
-// document.addEventListener('alpine:init', () => {
-//     Alpine.store('ui', {
-//         sidebarOpen: false,
-//         dark: localStorage.theme === 'dark',
+        closeSidebar() {
+            this.sidebarOpen = false
+        },
 
-//         toggleSidebar() {
-//             this.sidebarOpen = !this.sidebarOpen
-//         },
+        toggleDark() {
+            this.dark = !this.dark
+            localStorage.theme = this.dark ? 'dark' : 'light'
+            document.documentElement.classList.toggle('dark', this.dark)
+        },
 
-//         closeSidebar() {
-//             this.sidebarOpen = false
-//         },
-
-//         toggleDark() {
-//             this.dark = !this.dark
-//             localStorage.theme = this.dark ? 'dark' : 'light'
-//             document.documentElement.classList.toggle('dark', this.dark)
-//         },
-
-//         init() {
-//             document.documentElement.classList.toggle('dark', this.dark)
-//         }
-//     })
-// })
-
-// Alpine.start()
+        init() {
+            document.documentElement.classList.toggle('dark', this.dark)
+        }
+    })
+})
 
 

@@ -5,7 +5,7 @@
         <div class="h-px bg-zinc-800 mb-12"></div>
 
         <!-- FOOTER GRID -->
-        <div class="grid md:grid-cols-3 gap-14 items-center">
+        {{-- <div class="grid md:grid-cols-3 gap-14 items-center">
 
             <!-- LEFT: LEGAL -->
             <div class="space-y-4 text-zinc-400 text-sm">
@@ -57,7 +57,7 @@
                 <a href="/team" class="block hover:text-red-500 transition">Our Team</a>
             </div>
 
-        </div>
+        </div> --}}
 
         <!-- BOTTOM DIVIDER -->
         <div class="h-px bg-zinc-800 my-10"></div>

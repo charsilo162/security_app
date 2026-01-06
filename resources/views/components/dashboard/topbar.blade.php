@@ -11,12 +11,12 @@
             ☰
         </button>
 
-        <input
+        {{-- <input
             type="text"
             placeholder="Search..."
             class="hidden md:block px-4 py-2 rounded-lg
                    bg-zinc-100 dark:bg-zinc-800"
-        />
+        /> --}}
     </div>
 
     <!-- RIGHT -->
@@ -28,9 +28,9 @@
         </button>
 
         <!-- PROFILE -->
-        <div class="flex items-center gap-2">
+        {{-- <div class="flex items-center gap-2">
             <img src="https://i.pravatar.cc/40" class="w-8 h-8 rounded-full">
             <span class="hidden md:block">John Wick</span>
-        </div>
+        </div> --}}
     </div>
 </header>

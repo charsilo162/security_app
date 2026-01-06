@@ -17,25 +17,29 @@
 
         <!-- Desktop Menu -->
         <nav class="hidden md:flex gap-8 text-sm uppercase">
-            @foreach (config('navigation') as $item)
-                <a
-                    href="{{ route($item['route']) }}"
-                    @class([
-                        'transition',
-                        'text-red-500 font-semibold' => request()->routeIs($item['route']),
-                        'hover:text-red-500 text-zinc-300' => !request()->routeIs($item['route']),
-                    ])
-                >
-                    {{ $item['label'] }}
-                </a>
-            @endforeach
+                @foreach (config('navigation') as $item)
+                    <a
+                        {{-- Pass the route name AND the params array (default to empty array if missing) --}}
+                        href="{{ route($item['route'], $item['params'] ?? []) }}"
+                        
+                        @class([
+                            'transition',
+                            'text-red-500 font-semibold' => request()->routeIs($item['route']),
+                            'hover:text-red-500 text-zinc-300' => !request()->routeIs($item['route']),
+                        ])
+                    >
+                        {{ $item['label'] }}
+                    </a>
+                @endforeach
         </nav>
 
 
         <!-- Desktop CTA -->
         <div class="hidden md:block">
+        <a href="{{ route('register', ['role' => 'client']) }}">
             <x-buttons.primary>Hire Our Team</x-buttons.primary>
-        </div>
+        </a>       
+     </div>
 
         <!-- Mobile Hamburger -->
         <button 

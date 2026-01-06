@@ -11,8 +11,9 @@ class Logout extends Component
 {
     public function logout()
     {
+       
         $userName = session('user.first_name', 'User');
-        \Log::info("User Logout Initiated: " . $userName);
+        // \Log::info("User Logout Initiated: " . $userName);
 
         try {
             // Tell the API to revoke the current token

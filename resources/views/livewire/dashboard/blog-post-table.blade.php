@@ -12,6 +12,10 @@
             class="border rounded-lg px-4 py-2 text-sm
                    dark:bg-zinc-800 dark:border-zinc-600"
         />
+                <button wire:click="$set('openAiModal', true)" class="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition">
+            <i class="fas fa-robot"></i>
+            <span>AI Generate</span>
+        </button>
     </div>
 
     <!-- TABLE -->
@@ -171,7 +175,48 @@
             </div>
         </div>
     @endif
+        @if($openAiModal)
+            <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+                <div class="bg-zinc-900 border border-zinc-800 w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden">
+                    <div class="p-6 border-b border-zinc-800 flex justify-between items-center">
+                        <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                            <i class="fas fa-magic text-purple-500"></i> AI Content Creator
+                        </h3>
+                        <button wire:click="closeAiModal" class="text-zinc-400 hover:text-white">&times;</button>
+                    </div>
 
+                    <div class="p-6">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm text-zinc-400 mb-2">What should the blog be about?</label>
+                                <input type="text" wire:model="aiTopic" placeholder="e.g. Top Security Measures for Offices"
+                                    class="w-full bg-black border border-zinc-800 rounded-xl p-3 text-white outline-none focus:border-purple-500 transition">
+                                @error('aiTopic') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                            </div>
+                            
+                            <div class="bg-purple-500/10 border border-purple-500/20 p-4 rounded-xl">
+                                <p class="text-xs text-purple-300">
+                                    <i class="fas fa-info-circle mr-1"></i> Our AI will generate a title, full content, and meta data based on your topic. This may take 10-30 seconds.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-6 bg-zinc-900/50 border-t border-zinc-800 flex justify-end gap-3">
+                        <button wire:click="closeAiModal" class="px-4 py-2 text-zinc-400 hover:text-white transition">Cancel</button>
+                        
+                        <button wire:click="generateAiPost" 
+                                wire:loading.attr="disabled"
+                                class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-xl flex items-center gap-2 disabled:opacity-50">
+                            <span wire:loading.remove wire:target="generateAiPost">Generate Post</span>
+                            <span wire:loading wire:target="generateAiPost" class="flex items-center gap-2">
+                                <i class="fas fa-spinner fa-spin"></i> Writing...
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        @endif
     <script>
         window.addEventListener('notify', e => {
             alert(e.detail.message); // later replace with toast

@@ -1,86 +1,102 @@
 <?php
-
 namespace App\Livewire\Auth;
 
-use App\Services\ApiService;
-use Illuminate\Support\Facades\Session;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use App\Services\ApiService;
 
 class Register extends Component
 {
-     use WithFileUploads;
+    use WithFileUploads;
 
-    public $photo;
-    public $name = '';
-    public $email = '';
-    public $type = 'user';
-    public $password = '';
-    public $password_confirmation = '';
+    // Toggle between 'employee' and 'client'
+    public string $role = 'client'; 
 
-  protected $rules = [
-    'name' => 'required|string|max:255',
-    'email' => 'required|email|max:255',
-    'type' => 'required|in:user,center,tutor',
-    'password' => 'required|min:6|confirmed',
-    // Add photo rules here for temporary upload validation
-    'photo' => 'nullable|image|max:2048', 
-];
-// Add this method to App\Livewire\Auth\Register.php
+    // Common Fields
+    public $first_name, $last_name, $email, $password, $phone, $address, $photo;
 
-public function updatedPhoto()
-{
-    // The framework automatically validates here using $rules
-    $this->validateOnly('photo');
-    // If validation passes, you can see a temporary file path is created
-    // This is useful for confirmation
-    \Log::info('Photo selected and validated successfully: ' . $this->photo->getRealPath());
-}
-public function register()
-{
-    $this->validate(); // Uses the $rules property
+    // Client Specific
+    public $company_name, $industry;
 
-    // 1. Prepare the payload array for your multipartRequest function
-    $payload = [
-        ['name' => 'name', 'contents' => $this->name],
-        ['name' => 'email', 'contents' => $this->email],
-        ['name' => 'type', 'contents' => $this->type],
-        ['name' => 'password', 'contents' => $this->password],
-        ['name' => 'password_confirmation', 'contents' => $this->password_confirmation],
-    ];
+    // Employee Specific
+    public $designation, $department;
 
-    // 2. Attach the actual file stream if it exists
-    if ($this->photo) {
-        // Get the file contents as a stream resource
-        $fileStream = fopen($this->photo->getRealPath(), 'r');
-        
-        // Add the file to the payload in the expected format
-        $payload[] = [
-            'name' => 'photo', // This MUST match the API's validation rule name
-            'contents' => $fileStream, // The file stream resource
-            'filename' => $this->photo->getFilename(), // Recommended for correct file naming
+    protected ApiService $api;
+    public function boot(ApiService $api) { $this->api = $api; }
+
+    public function setRole($role)
+    {
+        $this->role = $role;
+        $this->resetValidation();
+    }
+
+    protected function rules()
+    {
+        $common = [
+            'first_name' => 'required|string|min:2',
+            'email'      => 'required|email',
+            'password'   => 'required|min:8',
+            'phone'      => 'required',
         ];
-    }
 
-    // 3. Use the postWithFile method, which utilizes multipartRequest
-    // The ApiService will close the stream automatically.
-    $response = (new ApiService())->postWithFile('register', $payload);
-    
-    if (isset($response['errors'])) {
-        foreach ($response['errors'] as $field => $messages) {
-            $this->addError($field, is_array($messages) ? $messages[0] : $messages);
+        if ($this->role === 'client') {
+            return array_merge($common, ['company_name' => 'required|string']);
         }
-        return;
+
+        return array_merge($common, [
+            'designation' => 'required',
+            'department'  => 'required'
+        ]);
     }
 
-    // Save auth data
-    Session::put('api_token', $response['token']);
-    Session::put('user', $response['user']);
+    public function register()
+    {
+        $this->validate();
 
-    return redirect()->route('category.index');
-}
+        $payload = [
+            ['name' => 'first_name', 'contents' => $this->first_name],
+            ['name' => 'last_name',  'contents' => $this->last_name],
+            ['name' => 'email',      'contents' => $this->email],
+            ['name' => 'password',   'contents' => $this->password],
+            ['name' => 'phone',      'contents' => $this->phone],
+            ['name' => 'role',       'contents' => $this->role], // Tell API the role
+        ];
+
+        // Add Role-Specific fields
+        if ($this->role === 'client') {
+            $payload[] = ['name' => 'company_name', 'contents' => $this->company_name];
+        } else {
+            $payload[] = ['name' => 'designation', 'contents' => $this->designation];
+        }
+
+        // Handle Photo
+        if ($this->photo) {
+            $payload[] = [
+                'name'     => 'photo',
+                'contents' => fopen($this->photo->getRealPath(), 'r'),
+                'filename' => $this->photo->getClientOriginalName(),
+            ];
+        }
+
+        // Endpoint could be a public 'register' endpoint or reuse your existing ones
+        $endpoint = ($this->role === 'client') ? "register/client" : "register/employee";
+        
+        $response = $this->api->postWithFile($endpoint, $payload);
+
+        if (isset($response['errors'])) {
+            foreach ($response['errors'] as $field => $messages) {
+                $this->addError($field, $messages[0]);
+            }
+            return;
+        }
+
+        return redirect()->route('login')->with('success', 'Registration successful!');
+    }
+
     public function render()
     {
-        return view('livewire.auth.register')->layout('layouts.auth', ['title' => 'Sign Up']);
+       // return view('livewire.auth.register');
+        return view('livewire.auth.register')
+            ->layout('layouts.auth');
     }
 }

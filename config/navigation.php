@@ -13,6 +13,7 @@ return [
         'label' => 'About',
         'route' => 'about',
     ],
+   
     [
         'label' => 'Contact',
         'route' => 'contact',
@@ -20,5 +21,10 @@ return [
     [
         'label' => 'Blog',
         'route' => 'blog',
+    ],
+     [
+        'label' => 'Signup/Job',
+        'route' => 'register',
+        'params' => ['role' => 'employee'],
     ],
 ];

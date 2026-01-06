@@ -2,6 +2,8 @@
 
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
+use App\Livewire\Auth\UnifiedSignup;
+use App\Livewire\Blogs\BlogShow;
 use App\Livewire\Client\Dashboard;
 use App\Livewire\Client\MyRequests;
 use App\Livewire\Client\RequestService;
@@ -15,11 +17,11 @@ use App\Livewire\Employee\DutyRoster;
 
 Route::get('/login', Login::class)->name('logins');
 // Route::get('/register', Login::class)->name('register');
-Route::get('/register', Register::class)->name('signups');
 Route::get('/', function () {
     return view('welcome');
 });
-
+Route::get('/blog/{uuid}', BlogShow::class)->name('blog.show');
+Route::get('/signup', UnifiedSignup::class)->name('register');
 Route::get('/', fn () => view('pages.home'))->name('home');
 Route::get('/services', fn () => view('pages.services'))->name('services');
 Route::get('/about', fn () => view('pages.about'))->name('about');
