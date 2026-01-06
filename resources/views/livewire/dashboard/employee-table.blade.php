@@ -30,7 +30,7 @@
                         <div class="text-xs text-zinc-400">{{ $emp['email'] }}</div>
                     </td> --}}
                     <td class="p-4">
-                        <a href="{{ route('employees.show', $emp['uuid']) }}" class="group">
+                        <a href="{{ route('admin.employees.show', $emp['uuid']) }}" class="group">
                             <div class="font-bold text-indigo-600 group-hover:underline">{{ $emp['full_name'] }}</div>
                             <div class="text-xs text-zinc-400">{{ $emp['email'] }}</div>
                         </a>

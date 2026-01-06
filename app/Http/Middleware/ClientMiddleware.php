@@ -2,23 +2,18 @@
 
 namespace App\Http\Middleware;
 
+use Illuminate\Http\Request;
 use Closure;
 use Illuminate\Support\Facades\Session;
 
-class UserMiddleware
+class ClientMiddleware
 {
-    public function handle($request, Closure $next)
+  public function handle($request, Closure $next) 
     {
         $user = Session::get('user');
-
-        if (!$user) {
+        if (!$user || $user['type'] !== 'client') {
             return redirect()->route('logins');
         }
-
-        if (($user['type']) !== 'user') {
-            return redirect()->route('my.course');
-        }
-
         return $next($request);
     }
 }

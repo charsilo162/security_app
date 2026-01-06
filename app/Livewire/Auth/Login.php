@@ -16,52 +16,62 @@ class Login extends Component
         'email' => 'required|email',
         'password' => 'required',
     ];
+public function mount()
+{
+    if (Session::has('api_token') && Session::has('user')) {
 
-    public function mount()
-    {
-        // Prevent login page if already logged in
-        if (Session::has('api_token') && Session::has('user')) {
-            return redirect()->route('dashboard.index'); // dashboard or category page
-        }
+        $user = Session::get('user');
+
+        return match ($user['type']) {
+            'admin'    => redirect()->route('admin.index'),
+            'client'   => redirect()->route('client.dashboard'),
+            'employee' => redirect()->route('employee.roster'),
+            default    => redirect()->route('home'),
+        };
     }
+}
 
-    public function login()
-    {
-       
-        $this->validate();
-        $this->isLoading = true;
 
-        try {
+   public function login()
+        {
+            $this->validate();
+            $this->isLoading = true;
 
-            $response = (new ApiService())->post('login', [
-                'email' => $this->email,
-                'password' => $this->password,
-            ]);
+            try {
+                $response = (new ApiService())->post('login', [
+                    'email' => $this->email,
+                    'password' => $this->password,
+                ]);
 
-            if (isset($response['token'])) {
+                if (isset($response['token'])) {
+                    Session::put('api_token', $response['token']);
+                    Session::put('user', $response['user']);
 
-                // Save token and user in session
-                Session::put('api_token', $response['token']);
-                Session::put('user', $response['user']);
+                    $user = $response['user'];
 
-                return redirect()->route('dashboard.index'); 
-            } 
-            else {
+                    // Role-Based Redirect Logic
+                   return match($user['type']) {
+                        'admin'    => redirect()->route('admin.index'),      
+                        'client'   => redirect()->route('client.dashboard'),  
+                        'employee' => redirect()->route('employee.roster'),  
+                        default    => redirect()->route('logins'),
+                    };
+                } 
+                
                 $this->addError('email', 'Invalid credentials');
+
+            } catch (\Exception $e) {
+                //   dd(
+                //         $e->getMessage(),
+                //         $e->getFile(),
+                //         $e->getLine(),
+                //         $e->getTraceAsString()
+                //     );
+                $this->addError('email', 'Connection error. Please try again.');
             }
 
-        } catch (\Illuminate\Http\Client\RequestException $e) {
-
-            $message = $e->response->json('message') ?? 'Invalid credentials';
-            $this->addError('email', $message);
-
-        } catch (\Exception $e) {
-
-            $this->addError('email', 'Something went wrong. Try again.');
+            $this->isLoading = false;
         }
-
-        $this->isLoading = false;
-    }
 
     public function render()
     {

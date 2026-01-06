@@ -66,15 +66,29 @@
                             {{ $req['status'] }}
                         </span>
                     </td>
-                    <td class="p-4 text-right">
-                        @if($req['status'] === 'pending')
-                            <button wire:click="reviewRequest('{{ $req['uuid'] }}')" class="bg-indigo-600 text-white px-3 py-1 rounded-md text-xs hover:bg-indigo-700">
-                                Review
-                            </button>
-                        @else
-                            <button class="text-zinc-400 cursor-not-allowed"><i class="fas fa-check-double"></i></button>
-                        @endif
-                    </td>
+                   <td class="p-4 text-right">
+    <div class="flex justify-end gap-2">
+        @if($req['status'] === 'pending')
+            <button wire:click="reviewRequest('{{ $req['uuid'] }}')" 
+                class="bg-indigo-600 text-white px-4 py-1.5 rounded-lg text-xs font-bold hover:bg-indigo-700 transition">
+                Review
+            </button>
+        @else
+            <button 
+                wire:confirm="Reverting this will refund the employee's leave balance. Continue?"
+                wire:click="revertToPending('{{ $req['uuid'] }}')" 
+                class="flex items-center gap-1.5 bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-amber-100 dark:hover:bg-amber-900/40 transition border border-amber-200 dark:border-amber-800"
+                title="Revert to Pending">
+                
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
+                </svg>
+
+                <span>Reset</span>
+            </button>
+        @endif
+    </div>
+</td>
                 </tr>
                 @endforeach
             </tbody>

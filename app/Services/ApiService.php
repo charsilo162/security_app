@@ -160,7 +160,10 @@ class ApiService
         return $this->multipartRequest('post', $endpoint, $formData);
     }
 
-
+    public function patch($endpoint, $data = [])
+        {
+            return $this->request('patch', $endpoint, $data);
+        }
     public function initializePayment($courseId)
     {
         $response = $this->post('payment/initialize', [

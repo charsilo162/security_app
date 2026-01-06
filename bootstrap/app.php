@@ -7,6 +7,9 @@ use App\Http\Middleware\AuthenticateApi;
 use App\Http\Middleware\SessionAuth;
 use App\Http\Middleware\UserMiddleware;
 use App\Http\Middleware\AdminMiddleware;
+use App\Http\Middleware\ClientMiddleware;
+use App\Http\Middleware\EmployeeMiddleware;
+
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
@@ -18,7 +21,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'apiauth' => AuthenticateApi::class,
              'sessionauth' => SessionAuth::class,
             'admin' => AdminMiddleware::class,
-            'users' => UserMiddleware::class,
+            'employee' => EmployeeMiddleware::class,
+            'client' => ClientMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

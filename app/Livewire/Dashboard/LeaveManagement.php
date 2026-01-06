@@ -37,6 +37,7 @@ class LeaveManagement extends Component
     public function reviewRequest($uuid)
     {
         $response = $this->api->get("leaves/{$uuid}");
+        //dd( $response);
         $this->selectedRequest = $response['data'];
         $this->dispatch('open-modal', name: 'review-modal');
     }
@@ -58,7 +59,19 @@ class LeaveManagement extends Component
             $this->reset(['selectedRequest', 'adminRemarks']);
         }
     }
+        public function revertToPending($uuid)
+            {
+                // We send a PATCH request to set status back to pending
+                $response = $this->api->patch("leaves/{$uuid}/status", [
+                    'status' => 'pending',
+                    'remarks' => 'Status reverted by HR'
+                ]);
 
+                if (isset($response['message'])) {
+                    $this->dispatch('notify', type: 'success', message: 'Request has been reset to pending.');
+                    $this->loadStats(); // Refresh the top counts (Approved/Pending)
+                }
+            }
     public function render()
     {
         $response = $this->api->get('leaves', [
