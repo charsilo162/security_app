@@ -35,21 +35,65 @@ class ServiceRequestTable extends Component
 
         $this->showModal = true;
     }
-    public function updateRequestStatus($uuid, $newStatus)
-        {
-            // Hits the PATCH /admin/requests/{uuid}/status endpoint in your API
-            $response = $this->api->patch("admin/requests/{$uuid}/status", [
-                'status' => $newStatus,
-                'remarks' => "Status manually updated to {$newStatus} by Admin."
-            ]);
+    // public function updateRequestStatus($uuid, $newStatus)
+    //     {
+    //         // Hits the PATCH /admin/requests/{uuid}/status endpoint in your API
+    //         $response = $this->api->patch("admin/requests/{$uuid}/status", [
+    //             'status' => $newStatus,
+    //             'remarks' => "Status manually updated to {$newStatus} by Admin."
+    //         ]);
 
-            if (isset($response['errors'])) {
-                $this->dispatch('notify', type: 'error', message: 'Status update failed.');
-                return;
-            }
+    //         if (isset($response['errors'])) {
+    //             $this->dispatch('notify', type: 'error', message: 'Status update failed.');
+    //             return;
+    //         }
 
-            $this->dispatch('notify', type: 'success', message: "Mission marked as " . ucfirst($newStatus));
+    //         $this->dispatch('notify', type: 'success', message: "Mission marked as " . ucfirst($newStatus));
+    //     }
+
+        public function updateRequestStatus($uuid, $newStatus)
+    {
+        $response = $this->api->patch("admin/requests/{$uuid}/status", [
+            'status' => $newStatus,
+            'remarks' => "Status updated to {$newStatus} by Admin."
+        ]);
+
+        if (isset($response['errors'])) {
+            $this->dispatch('notify', type: 'error', message: 'Status update failed.');
+            return;
         }
+
+        // Close modal if it was open (relevant for 'Cancelled' from modal footer)
+        $this->showModal = false; 
+
+        $this->dispatch('notify', type: 'success', message: "Mission marked as " . ucfirst($newStatus));
+    }
+
+    public function confirmAssignment()
+    {
+        $this->validate([
+            'selectedEmployees' => 'required|array|min:1',
+        ]);
+
+        $payload = [
+            'employee_ids' => $this->selectedEmployees,
+            'remarks' => $this->adminRemarks,
+            'status' => 'assigned'
+        ];
+
+        $response = $this->api->patch("admin/requests/{$this->selectedRequest['uuid']}/assign", $payload);
+
+        if (isset($response['errors'])) {
+            $this->dispatch('notify', type: 'error', message: 'Assignment failed.');
+            return;
+        }
+
+        $this->showModal = false;
+        // Reset selected employees so they don't stay checked for the next request
+        $this->reset(['selectedEmployees', 'adminRemarks']); 
+        
+        $this->dispatch('notify', type: 'success', message: 'Security Personnel Assigned!');
+    }
     /**
  * Quick action to approve a request before assignment
  */
@@ -70,32 +114,32 @@ class ServiceRequestTable extends Component
             /**
      * Submit the assignment to the Backend
      */
-    public function confirmAssignment()
-    {
-        $this->validate([
-            'selectedEmployees' => 'required|array|min:1',
-        ]);
+    // public function confirmAssignment()
+    // {
+    //     $this->validate([
+    //         'selectedEmployees' => 'required|array|min:1',
+    //     ]);
 
-        $payload = [
-            'employee_ids' => $this->selectedEmployees,
-            'remarks' => $this->adminRemarks,
-            'status' => 'assigned'
-        ];
+    //     $payload = [
+    //         'employee_ids' => $this->selectedEmployees,
+    //         'remarks' => $this->adminRemarks,
+    //         'status' => 'assigned'
+    //     ];
 
-        // Using the PATCH route we defined in the backend
-        $response = $this->api->patch("admin/requests/{$this->selectedRequest['uuid']}/assign", $payload);
+    //     // Using the PATCH route we defined in the backend
+    //     $response = $this->api->patch("admin/requests/{$this->selectedRequest['uuid']}/assign", $payload);
 
-        if (isset($response['errors'])) {
-            $this->dispatch('notify', type: 'error', message: 'Assignment failed. Check availability.');
-            return;
-        }
+    //     if (isset($response['errors'])) {
+    //         $this->dispatch('notify', type: 'error', message: 'Assignment failed. Check availability.');
+    //         return;
+    //     }
 
-        $this->dispatch('notify', type: 'success', message: 'Security Personnel Assigned!');
-        $this->showModal = false;
-    }
+    //     $this->dispatch('notify', type: 'success', message: 'Security Personnel Assigned!');
+    //     $this->showModal = false;
+    // }
   // Inside ServiceRequestTable.php
 
-// This hooks into Livewire's lifecycle to reset page on search update
+    // This hooks into Livewire's lifecycle to reset page on search update
     public function updatingSearch()
     {
         $this->resetPage();

@@ -12,7 +12,7 @@ class BlogShow extends Component
     {
         // Fetch the single post from your API
         $response = $api->get("posts/{$uuid}");
-
+//dd($response);
         if (isset($response['data'])) {
             $this->post = $response['data'];
         } else {

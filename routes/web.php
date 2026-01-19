@@ -33,6 +33,19 @@ Route::get('/dashboard', fn () => view('dashboard.index'))->name('dashboard.inde
 //  {
 //     return view('dashboard.employee-detail-page', ['uuid' => $uuid]);
 // })->name('employees.show');
+
+
+Route::get('/services/{slug}', function ($slug) {
+
+    $service = collect(config('services_list'))
+        ->firstWhere('slug', $slug);
+
+    abort_unless($service, 404);
+
+    return view('services.show', compact('service'));
+
+})->name('services.show');
+
  
 
 
@@ -90,6 +103,10 @@ Route::middleware(['sessionauth'])->group(function () {
         Route::get('/my-leaves', function () {
             return view('dashboard.leaves.employee-portal');
         })->name('leaves.my-history');
+
+        Route::get('/employees/{uuid}', function ($uuid) {
+            return view('dashboard.employee-detail-page', ['uuid' => $uuid]);
+        })->name('employees.show');
         
     });
 });

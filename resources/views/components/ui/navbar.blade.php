@@ -94,9 +94,11 @@
                     </a>
                 @endforeach
 
+      <a href="{{ route('register', ['role' => 'client']) }}">
                 <x-buttons.primary class="w-full text-center">
                     Hire Our Team
                 </x-buttons.primary>
+                 </a>  
         </nav>
 
     </div>

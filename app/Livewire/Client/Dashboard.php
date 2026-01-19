@@ -18,12 +18,15 @@ class Dashboard extends Component
     public function mount()
     {
         // We fetch the dashboard summary specifically for this client
-        $response = $this->api->get('client/dashboard-summary');
-        
-        $this->stats = $response['stats'] ?? [
-            'active_guards' => 0,
-            'pending_requests' => 0,
-            'total_spent' => 0
+        $response = $this->api->get('stat/service-stats');
+       // dd($response['data']);
+        $this->stats = $response['data'] ?? [
+              "total" => 0,
+            "pending_requests" => 0,
+            "approved" => 0,
+            "active" => 0,
+            "completed" => 0,
+            "cancelled" => 0,
         ];
 
         $this->recentRequests = $response['recent_requests'] ?? [];

@@ -23,15 +23,29 @@
                 <i class="fas fa-user-shield"></i>
             </div>
             <p class="text-zinc-500 text-xs font-bold uppercase tracking-widest">Active Guards</p>
-            <h3 class="text-3xl font-black mt-1">{{ $stats['active_guards'] }}</h3>
+            <h3 class="text-3xl font-black mt-1">{{ $stats['active'] }}</h3>
         </div>
 
         <div class="bg-white dark:bg-zinc-900 p-6 rounded-3xl border dark:border-zinc-800 shadow-sm">
             <div class="w-10 h-10 bg-amber-50 dark:bg-amber-900/30 rounded-xl flex items-center justify-center mb-4 text-amber-600">
                 <i class="fas fa-clock"></i>
             </div>
+            <p class="text-zinc-500 text-xs font-bold uppercase tracking-widest">Total Requests</p>
+            <h3 class="text-3xl font-black mt-1">{{ $stats['total'] }}</h3>
+        </div>
+        <div class="bg-white dark:bg-zinc-900 p-6 rounded-3xl border dark:border-zinc-800 shadow-sm">
+            <div class="w-10 h-10 bg-amber-50 dark:bg-amber-900/30 rounded-xl flex items-center justify-center mb-4 text-amber-600">
+                <i class="fas fa-clock"></i>
+            </div>
+            <p class="text-zinc-500 text-xs font-bold uppercase tracking-widest">Approved Requests</p>
+            <h3 class="text-3xl font-black mt-1">{{ $stats['approved'] }}</h3>
+        </div>
+        <div class="bg-white dark:bg-zinc-900 p-6 rounded-3xl border dark:border-zinc-800 shadow-sm">
+            <div class="w-10 h-10 bg-amber-50 dark:bg-amber-900/30 rounded-xl flex items-center justify-center mb-4 text-amber-600">
+                <i class="fas fa-clock"></i>
+            </div>
             <p class="text-zinc-500 text-xs font-bold uppercase tracking-widest">Pending Requests</p>
-            <h3 class="text-3xl font-black mt-1">{{ $stats['pending_requests'] }}</h3>
+            <h3 class="text-3xl font-black mt-1">{{ $stats['pending'] }}</h3>
         </div>
 
         <div class="bg-white dark:bg-zinc-900 p-6 rounded-3xl border dark:border-zinc-800 shadow-sm">
@@ -39,7 +53,7 @@
                 <i class="fas fa-check-double"></i>
             </div>
             <p class="text-zinc-500 text-xs font-bold uppercase tracking-widest">Completed Shifts</p>
-            <h3 class="text-3xl font-black mt-1">124</h3>
+            <h3 class="text-3xl font-black mt-1">{{ $stats['completed'] }}</h3>
         </div>
     </div>
 
@@ -47,7 +61,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         
         {{-- Active Mission Card --}}
-        <div class="bg-zinc-900 rounded-[2rem] p-8 text-white relative overflow-hidden shadow-2xl">
+        {{-- <div class="bg-zinc-900 rounded-[2rem] p-8 text-white relative overflow-hidden shadow-2xl">
             <div class="relative z-10">
                 <div class="flex justify-between items-start mb-8">
                     <span class="bg-indigo-500 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-tighter">Current Deployment</span>
@@ -68,12 +82,12 @@
                     Contact Site Supervisor
                 </button>
             </div>
-            {{-- Abstract background decoration --}}
+           
             <div class="absolute -right-20 -bottom-20 w-64 h-64 bg-indigo-600/20 rounded-full blur-3xl"></div>
-        </div>
+        </div> --}}
 
         {{-- Request List Preview --}}
-        <div class="bg-white dark:bg-zinc-900 rounded-[2rem] border dark:border-zinc-800 p-8 shadow-sm">
+        {{-- <div class="bg-white dark:bg-zinc-900 rounded-[2rem] border dark:border-zinc-800 p-8 shadow-sm">
             <h4 class="text-lg font-bold mb-6">Recent Request Status</h4>
             <div class="space-y-6">
                 @forelse($recentRequests as $req)
@@ -93,7 +107,7 @@
                 <p class="text-zinc-500 text-sm italic">No recent requests found.</p>
                 @endforelse
             </div>
-        </div>
+        </div> --}}
 
     </div>
 </div>

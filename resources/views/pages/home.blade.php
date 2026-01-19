@@ -14,7 +14,8 @@
 
 <x-sections.testimonials />
 <x-sections.concern />
-<x-sections.contact_section />
+{{-- <x-sections.contact_section /> --}}
+<livewire:contact-form /> 
     <x-ui.footer />
     @push('scripts')
 <script>

@@ -82,7 +82,7 @@
 
                 <p class="text-center text-sm text-zinc-500 pt-4">
                     New here?
-                    <a href="#" class="text-indigo-400 font-semibold hover:underline decoration-2 underline-offset-4">Create account</a>
+                    <a href="{{ route('register') }}" class="text-indigo-400 font-semibold hover:underline decoration-2 underline-offset-4">Create account</a>
                 </p>
 
             </form>

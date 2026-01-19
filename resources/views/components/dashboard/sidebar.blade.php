@@ -25,6 +25,8 @@
 <nav class="p-4 space-y-1 text-sm font-medium">
     @php
         $userType = session('user.type');
+
+       
         $activeClass = "bg-indigo-50 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-400";
         $inactiveClass = "text-zinc-600 hover:bg-zinc-50 dark:text-zinc-400 dark:hover:bg-zinc-800/50 hover:text-zinc-900";
         $baseClass = "flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 group";
@@ -64,6 +66,9 @@
 
     {{-- 2. CLIENT SECTION (prefix: client, name: client.) --}}
     @if($userType === 'client')
+      {{-- @php
+        $userTID = session('user.profile_uuid');
+    @endphp --}}
         <div class="pb-2 px-4 mt-2">
             <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Client Console</span>
         </div>
@@ -79,10 +84,14 @@
         <a href="{{ route('client.my-requests') }}" class="{{ $baseClass }} {{ request()->routeIs('client.my-requests') ? $activeClass : $inactiveClass }}">
             <i class="fas fa-history w-5"></i> My History
         </a>
+      
     @endif
 
     {{-- 3. EMPLOYEE SECTION (prefix: me, name: employee.) --}}
     @if($userType === 'employee')
+    @php
+        $userTID = session('user.profile_uuid');
+    @endphp
         <div class="pb-2 px-4 mt-2">
             <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Guard Portal</span>
         </div>
@@ -95,6 +104,10 @@
         <a href="{{ route('employee.leaves.my-history') }}" class="{{ $baseClass }} {{ request()->routeIs('employee.leaves.my-history') ? $activeClass : $inactiveClass }}">
             <i class="fas fa-clock w-5"></i> My Leaves
         </a>
+        <a href="{{ route('employee.employees.show', $userTID) }}" class="{{ $baseClass }} {{ request()->routeIs('client.my-requests') ? $activeClass : $inactiveClass }}">
+            <i class="fas fa-history w-5"></i> Employee Details
+        </a>
+      
     @endif
 
     {{-- LOGOUT --}}

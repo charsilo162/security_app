@@ -48,9 +48,9 @@
                 </div>
             </div>
 
-            <button class="w-full mt-6 py-2.5 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition">
+            {{-- <button class="w-full mt-6 py-2.5 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition">
                 Send Message
-            </button>
+            </button> --}}
         </div>
 
         <div class="bg-white dark:bg-zinc-900 rounded-xl shadow-sm p-6 border dark:border-zinc-800">
