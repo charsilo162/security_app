@@ -51,6 +51,7 @@ class UnifiedSignup extends Component
     {
         $rules = [
             'first_name' => 'required|string',
+           
             'last_name'  => 'required|string',
             'email'      => 'required|email',
             'password'   => 'required|min:8',
@@ -59,6 +60,7 @@ class UnifiedSignup extends Component
         if ($this->role === 'employee') {
             $rules['designation'] = 'required';
             $rules['department'] = 'required';
+            $rules['date_of_birth'] = 'required|date|before_or_equal:today';
             $rules['joining_date'] = 'required|date';
         } else {
             $rules['company_name'] = 'required';
@@ -81,7 +83,7 @@ class UnifiedSignup extends Component
     {
         
         $this->validate($this->validationRules());
-
+       // dd($this->validate($this->validationRules()));
         // 1. Build Payload (sending 'role' so backend knows which logic to use)
         $payload = [
             ['name' => 'role',       'contents' => $this->role],
@@ -106,10 +108,10 @@ class UnifiedSignup extends Component
                 'filename' => $this->photo->getClientOriginalName(),
             ];
         }
-
+// dd('yere');
         // 2. Call the Register API
         $response = $this->api->postWithFile('register', $payload);
-
+// dd($response);
         if (isset($response['errors'])) {
             foreach ($response['errors'] as $field => $messages) {
                 $this->addError($field, $messages[0]);
@@ -118,20 +120,24 @@ class UnifiedSignup extends Component
         }
 
         // 3. SET SESSION (Exactly like your login logic)
-        if (isset($response['access_token'])) {
-            Session::put('api_token', $response['access_token']);
-            Session::put('user', $response['user']);
+               if (isset($response['access_token'])) {
 
-            $user = $response['user'];
+    // Inject profile_uuid into the user array
+    $user = $response['user'];
+    $user['profile_uuid'] = $response['profile_uuid'];
+//dd($user);
+    // Now save to session
+    Session::put('api_token', $response['access_token']);
+    Session::put('user', $user);
 
-            // 4. Role-Based Redirect
-            return match($user['type']) {
-                'admin'    => redirect()->route('admin.index'),      
-                'client'   => redirect()->route('client.dashboard'),  
-                'employee' => redirect()->route('employee.roster'),  
-                default    => redirect()->route('home'),
-            };
-        }
+    // Continue as normal
+    return match($user['type']) {
+        'admin'    => redirect()->route('admin.clients'),      
+        'client'   => redirect()->route('client.dashboard'),  
+        'employee' => redirect()->route('employee.roster'),  
+        default    => redirect()->route('home'),
+    };
+}
 
         $this->addError('email', 'Account created but could not log you in.');
     }

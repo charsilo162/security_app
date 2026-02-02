@@ -101,10 +101,12 @@
                             : 'opacity-0 translate-y-3'"
                         class="mt-8 transition-all duration-700 ease-out delay-500"
                     >
+                     @if (!session('user'))
                         {{-- <x-buttons.primary>Hire Our Team</x-buttons.primary> --}}
                          <a href="{{ route('register', ['role' => 'client']) }}">
                      <x-buttons.primary>Hire Our Team</x-buttons.primary>
         </a> 
+        @endif
             </div>
 
 

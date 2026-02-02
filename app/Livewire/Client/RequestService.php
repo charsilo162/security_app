@@ -29,7 +29,7 @@ public function submitRequest()
     ];
 
     $response = $this->api->post("client/requests", $payload);
-dd( $response);
+    //dd( $response);
     if (isset($response['errors'])) {
         // Clear previous errors to avoid ghost messages
         $this->resetErrorBag();

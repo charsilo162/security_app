@@ -109,7 +109,19 @@ class ApiService
         } else {
             // --- JSON/Form-URL-Encoded LOGIC (No file) ---
             $fields = collect($formData)->pluck('contents', 'name')->all();
-            return $request->asForm()->$method($url, $fields)->throw()->json();
+            $response = $request->asForm()->$method($url, $fields);
+
+                if ($response->status() === 422) {
+                    return [
+                        'error'   => true,
+                        'status'  => 422,
+                        'message' => $response->json('message'),
+                        'errors'  => $response->json('errors'),
+                    ];
+                }
+
+                return $response->json();
+
         }
     }
 

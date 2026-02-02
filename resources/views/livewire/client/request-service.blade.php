@@ -36,7 +36,7 @@
                         <label class="block text-xs font-bold uppercase text-zinc-500 mb-2">Mission Title</label>
                         <input wire:model="title" type="text" placeholder="e.g. Executive Protection for AGM" 
                             class="w-full bg-zinc-50 dark:bg-zinc-800 border-none rounded-2xl p-4 focus:ring-2 focus:ring-indigo-500">
-                    </div>
+                    </div> 
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
@@ -72,15 +72,39 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label class="block text-xs font-bold uppercase text-zinc-500 mb-2">Start Date</label>
-                        <input wire:model="start_date" type="date" class="w-full bg-zinc-50 dark:bg-zinc-800 border-none rounded-2xl p-4 focus:ring-2 focus:ring-indigo-500">
+                    {{-- Start Date --}}
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-zinc-500 mb-2">Start Date</label>
+
+                            <input 
+                                wire:model="start_date" 
+                                type="date" 
+                                class="w-full bg-zinc-50 dark:bg-zinc-800 border rounded-2xl p-4 focus:ring-2 focus:ring-indigo-500
+                                    {{ $errors->has('start_date') ? 'border-red-500' : 'border-transparent' }}"
+                            >
+
+                            @error('start_date')
+                                <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        {{-- End Date --}}
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-zinc-500 mb-2">End Date</label>
+
+                            <input 
+                                wire:model="end_date" 
+                                type="date" 
+                                class="w-full bg-zinc-50 dark:bg-zinc-800 border rounded-2xl p-4 focus:ring-2 focus:ring-indigo-500
+                                    {{ $errors->has('end_date') ? 'border-red-500' : 'border-transparent' }}"
+                            >
+
+                            @error('end_date')
+                                <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span>
+                            @enderror
+                        </div>
                     </div>
-                    <div>
-                        <label class="block text-xs font-bold uppercase text-zinc-500 mb-2">End Date</label>
-                        <input wire:model="end_date" type="date" class="w-full bg-zinc-50 dark:bg-zinc-800 border-none rounded-2xl p-4 focus:ring-2 focus:ring-indigo-500">
-                    </div>
-                </div>
+
 
                 <div>
                     <label class="block text-xs font-bold uppercase text-zinc-500 mb-2">Special Instructions</label>

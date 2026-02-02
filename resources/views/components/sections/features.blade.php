@@ -56,7 +56,7 @@
 
         <!-- CTA -->
         <div class="text-center mt-16">
-            <a href="#contact"
+            <a href="{{ route('contact') }}"
                class="bg-red-600 hover:bg-red-700 transition px-8 py-4 rounded-full font-semibold">
                 Contact Us
             </a>

@@ -24,7 +24,7 @@ class EmployeeDetail extends Component
     public function loadEmployee()
     {
         $response = $this->api->get("employees/{$this->uuid}");
-      //  dd($response);
+   //  dd($response);
         if (isset($response['data'])) {
             $this->employee = $response['data'];
         } else {

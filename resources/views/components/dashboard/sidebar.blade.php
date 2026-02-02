@@ -12,7 +12,9 @@
             <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
                 <i class="fas fa-shield-alt text-white text-sm"></i>
             </div>
+              <a href="{{ route('home') }}">
             <span class="font-bold tracking-tight text-zinc-900 dark:text-white">NSG Portal</span>
+              </a>
         </div>
 
         <button @click="$store.ui.closeSidebar()" class="md:hidden text-zinc-500 hover:text-zinc-700">

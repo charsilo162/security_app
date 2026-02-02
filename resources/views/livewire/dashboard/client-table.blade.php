@@ -24,7 +24,9 @@
             </thead>
             <tbody>
                 @foreach($clients as $client)
-                <tr class="border-b dark:border-zinc-800 hover:bg-zinc-50 transition">
+                {{-- <tr class="border-b dark:border-zinc-800 hover:bg-gray-200 transition"> --}}
+                    <tr class="border-b dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800/60 transition">
+
                     <td class="p-4">
                         <div class="font-bold text-indigo-600">{{ $client['company_name'] }}</div>
                         <div class="text-xs text-zinc-400">{{ $client['address'] }}</div>
@@ -40,13 +42,24 @@
                     </td>
                     <td class="p-4 text-zinc-500 font-mono">{{ $client['registration_number'] ?? 'N/A' }}</td>
                     <td class="p-4 text-right flex justify-end gap-3">
-                        <button wire:click="openEditModal('{{ $client['uuid'] }}')" class="text-indigo-600 hover:underline">Edit</button>
-                        <button 
-                            wire:confirm="Are you sure you want to delete this client? All their requests will be lost."
-                            wire:click="deleteClient('{{ $client['uuid'] }}')" 
-                            class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition">
-                            <i class="fas fa-trash"></i>
-                        </button>                    </td>
+    {{-- Edit Button --}}
+    <button 
+        wire:click="openEditModal('{{ $client['uuid'] }}')" 
+        class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition-all duration-200 shadow-sm"
+    >
+        Edit
+    </button>
+
+    {{-- Delete Button --}}
+    <button 
+        wire:confirm="Are you sure you want to delete this client? All their requests will be lost."
+        wire:click="deleteClient('{{ $client['uuid'] }}')" 
+        class="px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400 transition-all duration-200 shadow-sm"
+    >
+        <i class="fas fa-trash"></i>
+    </button>
+</td>
+
                 </tr>
                 @endforeach
             </tbody>

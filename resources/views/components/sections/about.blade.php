@@ -18,7 +18,7 @@
                 giving you confidence and peace of mind at all times.
             </p>
 
-            <a href="#contact"
+            <a href="{{ route('contact') }}"
                class="inline-block mt-8 bg-red-600 hover:bg-red-700 transition px-6 py-3 rounded-full font-semibold">
                 Get In Touch
             </a>

@@ -35,11 +35,40 @@
 
 
         <!-- Desktop CTA -->
-        <div class="hidden md:block">
+        
+        <div class="hidden md:flex items-center gap-4">
+    @if (session('user'))
+        {{-- Logged In: Show Dashboard based on Role --}}
+        @php
+            $dashboardRoute = match(session('user')['type']) {
+                'admin'    => route('admin.clients'),
+                'client'   => route('client.dashboard'),
+                'employee' => route('employee.roster'),
+                default    => route('logins'),
+            };
+        @endphp
+
+        <a href="{{ $dashboardRoute }}">
+            <x-buttons.primary>Dashboard</x-buttons.primary>
+        </a>
+        
+        {{-- Optional: Add a Logout button --}}
+        {{-- <form action="{{ route('logout') }}" method="POST" class="inline">
+            @csrf
+            <button class="text-zinc-400 hover:text-white text-sm">Logout</button>
+        </form> --}}
+
+    @else
+        {{-- Guest: Show Hire & Login --}}
         <a href="{{ route('register', ['role' => 'client']) }}">
             <x-buttons.primary>Hire Our Team</x-buttons.primary>
-        </a>       
-     </div>
+        </a>
+        
+        <a href="{{ route('logins') }}">
+            <x-buttons.primary>Login</x-buttons.primary>
+        </a>
+    @endif
+</div>
 
         <!-- Mobile Hamburger -->
         <button 
@@ -94,11 +123,43 @@
                     </a>
                 @endforeach
 
-      <a href="{{ route('register', ['role' => 'client']) }}">
+      {{-- <a href="{{ route('register', ['role' => 'client']) }}">
                 <x-buttons.primary class="w-full text-center">
                     Hire Our Team
                 </x-buttons.primary>
-                 </a>  
+                 </a>   --}}
+
+                 @if (session('user'))
+        {{-- Logged In: Show Dashboard based on Role --}}
+        @php
+            $dashboardRoute = match(session('user')['type']) {
+                'admin'    => route('admin.clients'),
+                'client'   => route('client.dashboard'),
+                'employee' => route('employee.roster'),
+                default    => route('logins'),
+            };
+        @endphp
+
+        <a href="{{ $dashboardRoute }}">
+            <x-buttons.primary>Dashboard</x-buttons.primary>
+        </a>
+        
+        {{-- Optional: Add a Logout button --}}
+        {{-- <form action="{{ route('logout') }}" method="POST" class="inline">
+            @csrf
+            <button class="text-zinc-400 hover:text-white text-sm">Logout</button>
+        </form> --}}
+
+    @else
+        {{-- Guest: Show Hire & Login --}}
+        <a href="{{ route('register', ['role' => 'client']) }}">
+            <x-buttons.primary>Hire Our Team</x-buttons.primary>
+        </a>
+        
+        <a href="{{ route('logins') }}">
+            <x-buttons.primary>Login</x-buttons.primary>
+        </a>
+    @endif
         </nav>
 
     </div>

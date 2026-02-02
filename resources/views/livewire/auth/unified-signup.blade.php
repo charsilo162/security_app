@@ -83,20 +83,50 @@
 
                     <div class="space-y-1">
                         <label class="text-sm text-zinc-400 block">Date of Birth</label>
-                        <input type="date" wire:model="date_of_birth" class="w-full bg-zinc-950 border {{ $errors->has('date_of_birth') ? 'border-red-500' : 'border-zinc-800' }} rounded-xl p-3 text-white outline-none">
+                        <input type="date" wire:model="date_of_birth" max="{{ now()->toDateString() }}" class="w-full bg-zinc-950 border {{ $errors->has('date_of_birth') ? 'border-red-500' : 'border-zinc-800' }} rounded-xl p-3 text-white outline-none">
                         @error('date_of_birth') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                     </div>
-
                     <div class="space-y-1">
-                        <label class="text-sm text-zinc-400 block">Designation</label>
-                        <input type="text" wire:model="designation" class="w-full bg-zinc-950 border {{ $errors->has('designation') ? 'border-red-500' : 'border-zinc-800' }} rounded-xl p-3 text-white outline-none">
-                        @error('designation') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-                    </div>
+                            <label class="text-sm text-zinc-400 block">Designation</label>
+
+                            <select 
+                                wire:model="designation"
+                                class="w-full bg-zinc-950 border {{ $errors->has('designation') ? 'border-red-500' : 'border-zinc-800' }} rounded-xl p-3 text-white outline-none"
+                            >
+                                <option value="">Select Designation</option>
+                                <option value="armed">Armed Guard</option>
+                                <option value="unarmed">Unarmed Guard</option>
+                                <option value="escort">VIP Escort</option>
+                                <option value="event">Event Security</option>
+                            </select>
+
+                            @error('designation')
+                                <span class="text-red-500 text-xs">{{ $message }}</span>
+                            @enderror
+                        </div>
+                 
                     <div class="space-y-1">
                         <label class="text-sm text-zinc-400 block">Department</label>
-                        <input type="text" wire:model="department" class="w-full bg-zinc-950 border {{ $errors->has('department') ? 'border-red-500' : 'border-zinc-800' }} rounded-xl p-3 text-white outline-none">
-                        @error('department') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+
+                        <select 
+                            wire:model="department"
+                            class="w-full bg-zinc-950 border {{ $errors->has('department') ? 'border-red-500' : 'border-zinc-800' }} rounded-xl p-3 text-white outline-none"
+                        >
+                            <option value="">Select Department</option>
+                            <option value="operations">Operations</option>
+                            <option value="field">Field Operations</option>
+                            <option value="event">Event Security</option>
+                            <option value="patrol">Mobile Patrol</option>
+                            <option value="monitoring">Monitoring / Control Room</option>
+                            <option value="admin">Administration</option>
+                            <option value="logistics">Logistics</option>
+                        </select>
+
+                        @error('department')
+                            <span class="text-red-500 text-xs">{{ $message }}</span>
+                        @enderror
                     </div>
+
                     <div class="md:col-span-2 space-y-1">
                         <label class="text-sm text-zinc-400 block">Joining Date</label>
                         <input type="date" wire:model="joining_date" class="w-full bg-zinc-950 border {{ $errors->has('joining_date') ? 'border-red-500' : 'border-zinc-800' }} rounded-xl p-3 text-white outline-none">
@@ -140,7 +170,7 @@
                 @error('password') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
             </div>
         </div>
-        @if ($errors->any())
+        {{-- @if ($errors->any())
     <div class="bg-white p-4 text-black">
         <strong>Debug Errors:</strong>
         <ul>
@@ -149,7 +179,7 @@
             @endforeach
         </ul>
     </div>
-@endif
+@endif --}}
 
         @if ($errors->any())
             <div class="p-4 bg-red-500/10 border border-red-500/50 rounded-xl">

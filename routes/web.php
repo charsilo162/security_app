@@ -61,6 +61,7 @@ Route::middleware(['sessionauth'])->group(function () {
         
         // --- Core Management ---
         Route::get('/', function () { return view('dashboard.index'); })->name('index');
+        //Route::get('/clients', function () { return view('dashboard.index'); })->name('index');
         Route::get('/employees', EmployeeTable::class)->name('employees');
         Route::get('/clients', ClientTable::class)->name('clients');
         Route::get('/requests', ServiceRequestTable::class)->name('requests');

@@ -31,7 +31,7 @@ class BlogList extends Component
             $groupedPosts = $allPosts->slice(3)->groupBy(function($post) {
                 return \Carbon\Carbon::parse($post['published_at'])->format('F Y');
             });
-
+            // dd($featured);
             return view('livewire.blogs.blog-list', [
                 'featuredPosts' => $featured,
                 'groupedPosts'  => $groupedPosts, // This is now a multidimensional array

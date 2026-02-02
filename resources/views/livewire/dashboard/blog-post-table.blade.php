@@ -7,15 +7,22 @@
         </h2>
 
         <input
-           wire:model.live.debounce.500ms="search"
+            wire:model.live.debounce.500ms="search"
             placeholder="Search posts..."
             class="border rounded-lg px-4 py-2 text-sm
                    dark:bg-zinc-800 dark:border-zinc-600"
         />
-                <button wire:click="$set('openAiModal', true)" class="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition">
-            <i class="fas fa-robot"></i>
-            <span>AI Generate</span>
-        </button>
+
+        <div class="flex items-center gap-4">
+            <button wire:click="$set('openAiModal', true)" class="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition">
+                <i class="fas fa-robot"></i>
+                <span>AI Generate</span>
+            </button>
+
+            <button wire:click="create" class="px-4 py-2 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 transition">
+                <i class="fas fa-plus mr-2"></i> Add New Post
+            </button>
+        </div>
     </div>
 
     <!-- TABLE -->
@@ -114,109 +121,112 @@
         @endif
     </div>
 
-    @if($openEdit)
-        <div class="fixed inset-0 z-50 flex">
-
-            <!-- Backdrop -->
-            <div class="fixed inset-0 bg-black/40" wire:click="closeEdit"></div>
-
-            <!-- Slide-over -->
-            <div class="relative ml-auto w-full max-w-xl h-full bg-white dark:bg-zinc-900 shadow-xl">
-
-                <div class="p-6 border-b dark:border-zinc-700 flex justify-between">
-                    <h2 class="text-lg font-semibold">Edit Blog Post</h2>
-
-                    <button wire:click="closeEdit">✕</button>
+    <!-- ADD/EDIT MODAL (Centered Style with Image Field) -->
+    @if($openModal)
+        <div class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div class="bg-white dark:bg-zinc-900 rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl">
+                <div class="p-6 border-b dark:border-zinc-800 flex justify-between items-center sticky top-0 bg-white dark:bg-zinc-900">
+                    <h3 class="text-xl font-bold">{{ $postUuid ? 'Edit Blog Post' : 'Create New Blog Post' }}</h3>
+                    <button wire:click="closeModal" class="text-zinc-400 hover:text-black text-2xl">×</button>
                 </div>
 
-                <div class="p-6 space-y-4 overflow-y-auto h-[calc(100%-140px)]">
-
+                <form wire:submit.prevent="save" class="p-8 space-y-8">
                     <div>
-                        <label class="block text-sm mb-1">Title</label>
-                        <input
-                            wire:model.defer="title"
-                            class="w-full border rounded-lg px-3 py-2 dark:bg-zinc-800">
-                    </div>
-                <div>
-                    <label class="block text-sm mb-1">Category</label>
-                    <select wire:model.defer="selectedCategory"
-                            class="w-full border rounded-lg px-3 py-2 dark:bg-zinc-800">
-                        <option value="">Select a category</option>
-                        @foreach($allCategories as $category)
-                            <option value="{{ $category['id'] }}">
-                                {{ $category['name'] }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('category') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-                </div>
-
-                    <div>
-                        <label class="block text-sm mb-1">Content</label>
-                        <textarea
-                            wire:model.defer="content"
-                            rows="8"
-                            class="w-full border rounded-lg px-3 py-2 dark:bg-zinc-800"></textarea>
-                    </div>
-
-                </div>
-
-                <div class="p-6 border-t dark:border-zinc-700 flex justify-end gap-3">
-                    <button wire:click="closeEdit" class="px-4 py-2 border rounded-lg">
-                        Cancel
-                    </button>
-
-                    <button wire:click="saveEdit"
-                            class="px-4 py-2 bg-blue-600 text-white rounded-lg">
-                        Save
-                    </button>
-                </div>
-
-            </div>
-        </div>
-    @endif
-        @if($openAiModal)
-            <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-                <div class="bg-zinc-900 border border-zinc-800 w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden">
-                    <div class="p-6 border-b border-zinc-800 flex justify-between items-center">
-                        <h3 class="text-xl font-bold text-white flex items-center gap-2">
-                            <i class="fas fa-magic text-purple-500"></i> AI Content Creator
-                        </h3>
-                        <button wire:click="closeAiModal" class="text-zinc-400 hover:text-white">&times;</button>
-                    </div>
-
-                    <div class="p-6">
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm text-zinc-400 mb-2">What should the blog be about?</label>
-                                <input type="text" wire:model="aiTopic" placeholder="e.g. Top Security Measures for Offices"
-                                    class="w-full bg-black border border-zinc-800 rounded-xl p-3 text-white outline-none focus:border-purple-500 transition">
-                                @error('aiTopic') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                        <h4 class="text-indigo-600 font-bold text-sm uppercase mb-4">Post Details</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="md:col-span-2">
+                                <label class="block text-xs font-semibold mb-1">Title</label>
+                                <input wire:model="title" type="text" 
+                                    class="w-full border rounded-lg p-2.5 dark:bg-zinc-800 @error('title') border-red-500 @else border-zinc-300 @enderror"
+                                    placeholder="Enter post title...">
+                                @error('title') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                             </div>
-                            
-                            <div class="bg-purple-500/10 border border-purple-500/20 p-4 rounded-xl">
-                                <p class="text-xs text-purple-300">
-                                    <i class="fas fa-info-circle mr-1"></i> Our AI will generate a title, full content, and meta data based on your topic. This may take 10-30 seconds.
-                                </p>
+
+                            <div class="md:col-span-2">
+                                <label class="block text-xs font-semibold mb-1">Category</label>
+                                <select wire:model="selectedCategory" class="w-full border rounded-lg p-2.5 dark:bg-zinc-800 border-zinc-300">
+                                    <option value="">Select Category (Optional)</option>
+                                    @foreach($allCategories as $category)
+                                        <option value="{{ $category['id'] }}">{{ $category['name'] ?? $category['title'] }}</option>
+                                    @endforeach
+                                </select>
+                                @error('selectedCategory') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                            </div>
+
+                            <div class="md:col-span-2">
+                                <label class="block text-xs font-semibold mb-1">Featured Image (Optional)</label>
+                                <div class="flex items-center gap-4">
+                                    <div class="relative group">
+                                        <div class="w-32 h-32 rounded-lg border-2 border-dashed border-zinc-300 dark:border-zinc-700 flex items-center justify-center overflow-hidden bg-zinc-50 dark:bg-zinc-800">
+                                            @if ($image)
+                                                <img src="{{ $image->temporaryUrl() }}" class="w-full h-full object-cover">
+                                            @elseif($currentImageUrl)
+                                                <img src="{{ $currentImageUrl }}" class="w-full h-full object-cover">
+                                            @else
+                                                <i class="fas fa-camera text-zinc-400 text-2xl"></i>
+                                            @endif
+                                        </div>
+                                        <label class="mt-2 block cursor-pointer text-xs text-indigo-600 font-semibold hover:underline">
+                                            Upload Image
+                                            <input type="file" wire:model="image" class="hidden" accept="image/*">
+                                        </label>
+                                    </div>
+                                </div>
+                                @error('image') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                            </div>
+
+                            <div class="md:col-span-2">
+                                <label class="block text-xs font-semibold mb-1">Content</label>
+                                <textarea wire:model="content" rows="10" 
+                                    class="w-full border rounded-lg p-2.5 dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700 focus:ring-2 focus:ring-indigo-500 outline-none"
+                                    placeholder="Write your post content here..."></textarea>
+                                @error('content') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                             </div>
                         </div>
                     </div>
 
-                    <div class="p-6 bg-zinc-900/50 border-t border-zinc-800 flex justify-end gap-3">
-                        <button wire:click="closeAiModal" class="px-4 py-2 text-zinc-400 hover:text-white transition">Cancel</button>
-                        
-                        <button wire:click="generateAiPost" 
-                                wire:loading.attr="disabled"
-                                class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-xl flex items-center gap-2 disabled:opacity-50">
-                            <span wire:loading.remove wire:target="generateAiPost">Generate Post</span>
-                            <span wire:loading wire:target="generateAiPost" class="flex items-center gap-2">
-                                <i class="fas fa-spinner fa-spin"></i> Writing...
-                            </span>
+                    <div class="flex justify-end gap-3 pt-6 border-t dark:border-zinc-800">
+                        <button type="button" wire:click="closeModal" class="px-6 py-2 border rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-700">Cancel</button>
+                        <button type="submit" wire:loading.attr="disabled" class="px-8 py-2 bg-indigo-600 text-white rounded-lg shadow-lg hover:bg-indigo-700 transition disabled:opacity-50">
+                            <span wire:loading.remove>{{ $postUuid ? 'Save Changes' : 'Create Post' }}</span>
+                            <span wire:loading><i class="fas fa-spinner fa-spin mr-2"></i> Processing...</span>
                         </button>
                     </div>
-                </div>
+                </form>
             </div>
-        @endif
+        </div>
+    @endif
+
+    <!-- AI GENERATE MODAL (Centered Style for Consistency) -->
+    @if($openAiModal)
+        <div class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div class="bg-white dark:bg-zinc-900 rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl">
+                <div class="p-6 border-b dark:border-zinc-800 flex justify-between items-center sticky top-0 bg-white dark:bg-zinc-900">
+                    <h3 class="text-xl font-bold">Generate AI Post</h3>
+                    <button wire:click="closeAiModal" class="text-zinc-400 hover:text-black text-2xl">×</button>
+                </div>
+
+                <form wire:submit.prevent="generateAiPost" class="p-8 space-y-6">
+                    <div>
+                        <label class="block text-xs font-semibold mb-1">Topic</label>
+                        <input wire:model="aiTopic" type="text" 
+                            class="w-full border rounded-lg p-2.5 dark:bg-zinc-800 @error('aiTopic') border-red-500 @else border-zinc-300 @enderror"
+                            placeholder="Enter a topic for AI generation...">
+                        @error('aiTopic') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div class="flex justify-end gap-3">
+                        <button type="button" wire:click="closeAiModal" class="px-6 py-2 border rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-700">Cancel</button>
+                        <button type="submit" wire:loading.attr="disabled" class="px-8 py-2 bg-purple-600 text-white rounded-lg shadow-lg hover:bg-purple-700 transition disabled:opacity-50">
+                            <span wire:loading.remove>Generate</span>
+                            <span wire:loading><i class="fas fa-spinner fa-spin mr-2"></i> Generating...</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    @endif
+
     <script>
         window.addEventListener('notify', e => {
             alert(e.detail.message); // later replace with toast

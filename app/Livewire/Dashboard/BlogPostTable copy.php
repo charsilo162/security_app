@@ -4,14 +4,10 @@ namespace App\Livewire\Dashboard;
 
 use Livewire\Component;
 use App\Services\ApiService;
-use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\On; // ✅ Import this at the top
-use Livewire\WithFileUploads; // ✅ Add this for file uploads
 
 class BlogPostTable extends Component
 {
-    use WithFileUploads;
-
     public array $posts = [];
     public string $search = '';
     public int $perPage = 10;
@@ -24,13 +20,11 @@ class BlogPostTable extends Component
     // public array $selectedCategories = [];
     public ?string $selectedCategory = null;
 
-    // 🔥 COMBINED MODAL STATE FOR ADD/EDIT
-    public bool $openModal = false;
-    public ?string $postUuid = null;
+    // 🔥 EDIT MODAL STATE
+    public bool $openEdit = false;
+    public ?string $editUuid = null;
     public string $title = '';
     public string $content = '';
-    public $image; // For new image upload (TemporaryUploadedFile or null)
-    public ?string $currentImageUrl = null; // For displaying existing image during edit
 
     protected ApiService $api;
 
@@ -102,122 +96,59 @@ class BlogPostTable extends Component
     }
 
     /* =========================
-       ADD/EDIT (COMBINED)
+       EDIT (DIRECT TEST)
     ========================= */
 
-    public function create()
-    {
-        $this->reset(['postUuid', 'title', 'content', 'selectedCategory', 'image', 'currentImageUrl']);
-        $this->openModal = true;
+  public function edit(string $uuid)
+{
+    $response = $this->api->get("posts/{$uuid}");
+    $post = $response['data'] ?? null;
+
+    if (! $post) {
+        $this->dispatch('notify', type: 'error', message: 'Failed to load post');
+        return;
     }
 
-    public function edit(string $uuid)
-    {
-        $response = $this->api->get("posts/{$uuid}");
-        $post = $response['data'] ?? null;
+    $this->editUuid = $uuid;
+    $this->title = $post['title'] ?? '';
+    $this->content = $post['content'] ?? '';
 
-        if (! $post) {
-            $this->dispatch('notify', type: 'error', message: 'Failed to load post');
-            return;
+    // 2. Take only the first category ID from the array (or null)
+    $this->selectedCategory = !empty($post['categories']) 
+        ? (string) $post['categories'][0]['id'] 
+        : null;
+
+    $this->openEdit = true;
+}
+public function saveEdit()
+{
+    $response = $this->api->put("posts/{$this->editUuid}", [
+        'title' => $this->title,
+        'content' => $this->content,
+        'categories' => $this->selectedCategory ? [$this->selectedCategory] : [], 
+    ]);
+
+    if (isset($response['message'])) {
+        $this->dispatch('notify', type: 'success', message: $response['message']);
+        $this->reset(['openEdit', 'editUuid', 'title', 'content', 'selectedCategory']);
+        $this->fetchPosts();
+        return;
+    }
+
+    if (isset($response['errors'])) {
+        foreach ($response['errors'] as $field => $messages) {
+            $this->addError($field, $messages[0]);
         }
-
-        $this->postUuid = $uuid;
-        $this->title = $post['title'] ?? '';
-        $this->content = $post['content'] ?? '';
-
-        // 2. Take only the first category ID from the array (or null)
-        $this->selectedCategory = !empty($post['categories']) 
-            ? (string) $post['categories'][0]['id'] 
-            : null;
-
-        // Set current image URL (assuming 'image' field in API response is a URL or path)
-        $this->currentImageUrl = $post['image'] ?? null;
-
-        // Reset image upload field
-        $this->image = null;
-
-        $this->openModal = true;
+        return;
     }
 
-   public function save()
-        {
-            // 1. Validation
-            $this->validate([
-                'title'   => 'required|min:3',
-                'content' => 'required|min:10',
-                'image'   => 'nullable|image|max:2048',
-            ]);
+    $this->dispatch('notify', type: 'error', message: 'Failed to update post.');
+}
 
-            // 2. Build multipart payload
-            $data = [
-                ['name' => 'title', 'contents' => $this->title],
-                ['name' => 'content', 'contents' => $this->content],
-            ];
-
-            if ($this->selectedCategory) {
-                $data[] = [
-                    'name'     => 'categories[]',
-                    'contents' => $this->selectedCategory,
-                ];
-            }
-
-            // 3. Attach image if present
-            if ($this->image) {
-                $data[] = [
-                    'name'     => 'image',
-                    'contents' => fopen($this->image->getRealPath(), 'r'),
-                    'filename' => $this->image->getClientOriginalName(),
-                ];
-            }
-
-            Log::info('Livewire → API multipart payload prepared', [
-                'has_image' => (bool) $this->image,
-                'fields'    => collect($data)->pluck('name'),
-            ]);
-
-            // 4. Send to API
-            try {
-                if ($this->postUuid) {
-                    $response = $this->api->postWithFile("posts/{$this->postUuid}", $data, 'PUT');
-                } else {
-                    $response = $this->api->postWithFile('posts', $data);
-                }
-            } catch (\Exception $e) {
-                $this->dispatch('notify', type: 'error', message: $e->getMessage());
-                return;
-            }
-
-            // 5. Handle response
-            if (isset($response['message'])) {
-                $this->dispatch('notify', type: 'success', message: $response['message']);
-                $this->reset([
-                    'openModal',
-                    'postUuid',
-                    'title',
-                    'content',
-                    'selectedCategory',
-                    'image',
-                    'currentImageUrl'
-                ]);
-                $this->fetchPosts();
-                return;
-            }
-
-            if (isset($response['errors'])) {
-                foreach ($response['errors'] as $field => $messages) {
-                    $this->addError($field, $messages[0]);
-                }
-                return;
-            }
-
-            $this->dispatch('notify', type: 'error', message: 'Failed to save post.');
-        }
-
-
-    public function closeModal()
-    {
-        $this->reset(['openModal', 'postUuid', 'title', 'content', 'selectedCategory', 'image', 'currentImageUrl']);
-    }
+public function closeEdit()
+{
+    $this->reset(['openEdit', 'editUuid', 'title', 'content', 'selectedCategory']);
+}
 
     /* =========================
        STATE ACTIONS

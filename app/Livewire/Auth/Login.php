@@ -23,7 +23,7 @@ public function mount()
         $user = Session::get('user');
 
         return match ($user['type']) {
-            'admin'    => redirect()->route('admin.index'),
+            'admin'    => redirect()->route('admin.clients'),
             'client'   => redirect()->route('client.dashboard'),
             'employee' => redirect()->route('employee.roster'),
             default    => redirect()->route('home'),
@@ -51,7 +51,7 @@ public function mount()
 
                     // Role-Based Redirect Logic
                    return match($user['type']) {
-                        'admin'    => redirect()->route('admin.index'),      
+                        'admin'    => redirect()->route('admin.clients'),      
                         'client'   => redirect()->route('client.dashboard'),  
                         'employee' => redirect()->route('employee.roster'),  
                         default    => redirect()->route('logins'),
