@@ -80,11 +80,41 @@
                         <p class="text-xs text-zinc-400">Payroll Information</p>
                     </div>
                 </div>
-                <div class="bg-zinc-50 dark:bg-zinc-800/50 p-4 rounded-lg space-y-3 text-sm">
-                    <p><span class="text-zinc-500">Bank:</span> {{ $employee['banking']['bank_name'] ?? 'N/A' }}</p>
-                    <p><span class="text-zinc-500">Account:</span> ****{{ substr($employee['banking']['account_number'] ?? '', -4) }}</p>
-                    <p><span class="text-zinc-500">Holder:</span> {{ $employee['banking']['account_holder_name'] ?? 'N/A' }}</p>
-                </div>
+               <div
+    x-data="{ show: false }"
+    class="bg-zinc-50 dark:bg-zinc-800/50 p-4 rounded-lg space-y-3 text-sm"
+>
+    <p>
+        <span class="text-zinc-500">Bank:</span>
+        {{ $employee['banking']['bank_name'] ?? 'N/A' }}
+    </p>
+
+    <p class="flex items-center gap-3">
+        <span class="text-zinc-500">Account:</span>
+
+        <span x-show="!show" class="font-mono tracking-widest">
+            •••• •••• •••• {{ substr($employee['banking']['account_number'] ?? '', -4) }}
+        </span>
+
+        <span x-show="show" class="font-mono tracking-widest text-red-500">
+            {{ $employee['banking']['account_number'] ?? 'N/A' }}
+        </span>
+
+        <button
+            @click="show = !show"
+            class="text-xs text-blue-500 hover:underline"
+        >
+            <span x-show="!show">Show</span>
+            <span x-show="show">Hide</span>
+        </button>
+    </p>
+
+    <p>
+        <span class="text-zinc-500">Holder:</span>
+        {{ $employee['banking']['account_holder_name'] ?? 'N/A' }}
+    </p>
+</div>
+
             </div>
         </div>
 

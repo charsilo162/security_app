@@ -42,7 +42,7 @@ public function mount()
                     'email' => $this->email,
                     'password' => $this->password,
                 ]);
-
+            //dd($response);
                 if (isset($response['token'])) {
                     Session::put('api_token', $response['token']);
                     Session::put('user', $response['user']);

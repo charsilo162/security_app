@@ -92,14 +92,14 @@
             <div class="relative">
                 <div class="absolute inset-0 bg-indigo-500/20 rounded-full blur-3xl"></div>
                 <img 
-                    src="{{ asset('storage/img1.png') }}" 
+                    src="{{ asset('storage/images/s3.jpg') }}" 
                     class="relative w-80 h-auto object-contain drop-shadow-[0_20px_50px_rgba(79,70,229,0.3)]"
                     alt="Illustration"
                 >
             </div>
             <div class="mt-12 text-center">
-                <h3 class="text-xl font-semibold text-white">Elevate your skills</h3>
-                <p class="text-zinc-400 mt-2 text-sm max-w-[250px]">Join thousands of students and start your professional journey today.</p>
+                <h3 class="text-xl font-semibold text-white">Your security is our Concern</h3>
+                <p class="text-zinc-400 mt-2 text-sm max-w-[250px]">Join thousands of our Clients and enjoy our professional safty and guide.</p>
             </div>
         </div>
 

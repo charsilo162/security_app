@@ -29,9 +29,25 @@
         $userType = session('user.type');
 
        
-        $activeClass = "bg-indigo-50 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-400";
-        $inactiveClass = "text-zinc-600 hover:bg-zinc-50 dark:text-zinc-400 dark:hover:bg-zinc-800/50 hover:text-zinc-900";
-        $baseClass = "flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 group";
+   $activeClass = "
+    bg-indigo-50 text-indigo-700
+    dark:bg-indigo-900/30 dark:text-indigo-300
+";
+
+$inactiveClass = "
+    text-zinc-700
+    hover:bg-zinc-100 hover:text-zinc-900
+    dark:text-zinc-300
+    dark:hover:bg-zinc-700/60 dark:hover:text-white
+";
+
+$baseClass = "
+    flex items-center gap-3 px-4 py-2.5
+    rounded-xl
+    transition-colors duration-200
+    group
+";
+
     @endphp
 
     {{-- 1. ADMIN SECTION (prefix: dashboard, name: admin.) --}}
@@ -40,9 +56,9 @@
             <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Administration</span>
         </div>
 
-        <a href="{{ route('admin.index') }}" class="{{ $baseClass }} {{ request()->routeIs('admin.index') ? $activeClass : $inactiveClass }}">
+        {{-- <a href="{{ route('admin.index') }}" class="{{ $baseClass }} {{ request()->routeIs('admin.index') ? $activeClass : $inactiveClass }}">
             <i class="fas fa-th-large w-5"></i> Dashboard
-        </a>
+        </a> --}}
 
         <a href="{{ route('admin.employees') }}" class="{{ $baseClass }} {{ request()->routeIs('admin.employees') ? $activeClass : $inactiveClass }}">
             <i class="fas fa-users-cog w-5"></i> Manage Staff
@@ -75,6 +91,9 @@
             <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Client Console</span>
         </div>
 
+        <a href="{{ route('client.profile') }}" class="{{ $baseClass }} {{ request()->routeIs('client.profile') ? $activeClass : $inactiveClass }}">
+            <i class="fas fa-chart-line w-5"></i> My Profile
+        </a>
         <a href="{{ route('client.dashboard') }}" class="{{ $baseClass }} {{ request()->routeIs('client.dashboard') ? $activeClass : $inactiveClass }}">
             <i class="fas fa-chart-line w-5"></i> Overview
         </a>

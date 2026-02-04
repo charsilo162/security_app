@@ -4,6 +4,7 @@ use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
 use App\Livewire\Auth\UnifiedSignup;
 use App\Livewire\Blogs\BlogShow;
+use App\Livewire\Client\ClientProfile;
 use App\Livewire\Client\Dashboard;
 use App\Livewire\Client\MyRequests;
 use App\Livewire\Client\RequestService;
@@ -88,6 +89,7 @@ Route::middleware(['sessionauth'])->group(function () {
         
         Route::get('/dashboard', Dashboard::class)->name('dashboard');
         Route::get('/hire', RequestService::class)->name('request-service');
+        Route::get('/profile',ClientProfile::class)->name('profile');
         Route::get('/my-requests', MyRequests::class)->name('my-requests');
         
     });

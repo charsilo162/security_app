@@ -11,7 +11,12 @@
         </div>
     </div>
 
+
+
+
     <div class="bg-white dark:bg-zinc-900 rounded-xl border dark:border-zinc-700 overflow-hidden">
+         <div class="overflow-x-auto -mx-6 md:mx-0">
+    <table class="min-w-full">
         <table class="w-full text-sm">
             <thead class="bg-zinc-50 dark:bg-zinc-800 text-zinc-500 font-semibold border-b dark:border-zinc-700">
                 <tr>
@@ -49,6 +54,7 @@
                 @endforeach
             </tbody>
         </table>
+    </div>
     </div>
 
     @if($showModal)

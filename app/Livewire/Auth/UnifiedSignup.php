@@ -47,26 +47,52 @@ class UnifiedSignup extends Component
     }
 }
     // RENAMED: from getRules to validationRules to avoid Livewire conflict
-    private function validationRules() 
-    {
-        $rules = [
-            'first_name' => 'required|string',
-           
-            'last_name'  => 'required|string',
-            'email'      => 'required|email',
-            'password'   => 'required|min:8',
+  private function validationRules()
+{
+    $rules = [
+        // Common fields
+        'first_name' => 'required|string|max:20',
+        'last_name'  => 'required|string|max:20',
+        'email'      => 'required|email',
+        'phone'      => 'nullable|string|max:20',
+        'password'   => 'required|string|min:8',
+        'address'    => 'nullable|string|max:100',
+        'photo'      => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+    ];
+
+    if ($this->role === 'employee') {
+
+        $rules += [
+            // Employee profile
+            'designation'     => 'required|string|max:100',
+            'department'      => 'required|string|max:100',
+            'gender'          => 'nullable|in:male,female,other',
+            'bio'             => 'nullable|string|max:500',
+            'date_of_birth'   => 'required|date|before_or_equal:today',
+            'joining_date'    => 'required|date|after_or_equal:date_of_birth',
+
+            // Bank details
+            'account_holder_name' => 'required|string|max:100',
+            'account_number'      => 'required|string|min:6|max:20',
+            'bank_name'           => 'required|string|max:30',
+            'branch_name'         => 'nullable|string|max:30',
+            'routing_number'      => 'nullable|string|max:30',
+            'swift_code'          => 'nullable|string|max:20',
         ];
 
-        if ($this->role === 'employee') {
-            $rules['designation'] = 'required';
-            $rules['department'] = 'required';
-            $rules['date_of_birth'] = 'required|date|before_or_equal:today';
-            $rules['joining_date'] = 'required|date';
-        } else {
-            $rules['company_name'] = 'required';
-        }
-        return $rules;
+    } else {
+
+        $rules += [
+            // Client profile
+            'company_name'        => 'required|string|max:150',
+            'industry'            => 'nullable|string|max:100',
+            'registration_number' => 'nullable|string|max:100',
+        ];
     }
+
+    return $rules;
+}
+
     public function setRole($role)
 {
     $this->role = $role;
