@@ -12,7 +12,7 @@ class ApiService
     public function __construct()
     {
         $this->baseUrl = rtrim(config('services.api.base_url', 'http://127.0.0.1:8001/api'), '/');
-        // $this->baseUrl = rtrim(config('services.api.base_url', 'https://api.eaccademy.eroot.ng/api'), '/');
+        // $this->baseUrl = rtrim(config('services.api.base_url', 'https://api-e-security.eroot.ng/api'), '/');
     }
 
    

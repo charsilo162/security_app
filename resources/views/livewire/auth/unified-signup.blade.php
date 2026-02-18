@@ -141,7 +141,7 @@
                                 @error('bank_name') <span class="text-red-500 text-[10px]">{{ $message }}</span> @enderror
                             </div>
                             <div class="space-y-1">
-                                <input type="text" placeholder="Account Number" wire:model="account_number" class="w-full bg-zinc-950 border {{ $errors->has('account_number') ? 'border-red-500' : 'border-zinc-800' }} rounded-xl p-3 text-white text-sm outline-none">
+                                <input type="number" placeholder="Account Number" wire:model="account_number" class="w-full bg-zinc-950 border {{ $errors->has('account_number') ? 'border-red-500' : 'border-zinc-800' }} rounded-xl p-3 text-white text-sm outline-none">
                                 @error('account_number') <span class="text-red-500 text-[10px]">{{ $message }}</span> @enderror
                             </div>
                         </div>

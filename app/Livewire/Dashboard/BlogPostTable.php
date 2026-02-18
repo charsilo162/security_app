@@ -170,10 +170,10 @@ class BlogPostTable extends Component
                 ];
             }
 
-            Log::info('Livewire → API multipart payload prepared', [
-                'has_image' => (bool) $this->image,
-                'fields'    => collect($data)->pluck('name'),
-            ]);
+            // Log::info('Livewire → API multipart payload prepared', [
+            //     'has_image' => (bool) $this->image,
+            //     'fields'    => collect($data)->pluck('name'),
+            // ]);
 
             // 4. Send to API
             try {

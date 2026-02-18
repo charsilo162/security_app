@@ -54,7 +54,7 @@ class UnifiedSignup extends Component
         'first_name' => 'required|string|max:20',
         'last_name'  => 'required|string|max:20',
         'email'      => 'required|email',
-        'phone'      => 'nullable|string|max:20',
+        'phone' => 'nullable|numeric|digits_between:7,15',
         'password'   => 'required|string|min:8',
         'address'    => 'nullable|string|max:100',
         'photo'      => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
@@ -72,8 +72,8 @@ class UnifiedSignup extends Component
             'joining_date'    => 'required|date|after_or_equal:date_of_birth',
 
             // Bank details
-            'account_holder_name' => 'required|string|max:100',
-            'account_number'      => 'required|string|min:6|max:20',
+            'account_holder_name' => 'nullable|string|max:20',
+            'account_number' => 'nullable|numeric|digits_between:1,15',
             'bank_name'           => 'required|string|max:30',
             'branch_name'         => 'nullable|string|max:30',
             'routing_number'      => 'nullable|string|max:30',

@@ -14,10 +14,10 @@
         />
 
         <div class="flex items-center gap-4">
-            <button wire:click="$set('openAiModal', true)" class="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition">
+            {{-- <button wire:click="$set('openAiModal', true)" class="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition">
                 <i class="fas fa-robot"></i>
                 <span>AI Generate</span>
-            </button>
+            </button> --}}
 
             <button wire:click="create" class="px-4 py-2 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 transition">
                 <i class="fas fa-plus mr-2"></i> Add New Post
@@ -27,13 +27,14 @@
 
     <!-- TABLE -->
     <div class="overflow-x-auto">
-        <table class="w-full text-sm">
+        <table class="overflow-x-auto">
             <thead class="bg-zinc-100 dark:bg-zinc-800">
                 <tr>
                     <th class="p-3 text-left">Title</th>
                     <th class="p-3 text-left">Categories</th>
                     <th class="p-3 text-left">Status</th>
                     <th class="p-3 text-left">Created</th>
+                    <th class="p-3 text-left">Image</th>
                     <th class="p-3 text-right">Actions</th>
                 </tr>
             </thead>
@@ -62,6 +63,16 @@
                         <td class="p-3 text-zinc-500">
                             {{ \Carbon\Carbon::parse($post['created_at'])->format('M d, Y') }}
                         </td>
+                      <td class="p-3">
+                                <div class="w-14 h-14 rounded-lg overflow-hidden bg-zinc-100 dark:bg-zinc-800">
+                                    <img
+                                        src="{{ $post['image_url'] }}"
+                                        alt="{{ $post['title'] ?? 'Post image' }}"
+                                        class="w-full h-full object-cover"
+                                    >
+                                </div>
+                            </td>
+
 
                         <td class="p-3 text-right space-x-2">
                             @if($post['status'] !== 'published')

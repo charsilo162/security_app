@@ -133,7 +133,7 @@
                 <div class="relative">
                     <div class="absolute -left-[31px] top-0 w-4 h-4 rounded-full bg-zinc-300 border-4 border-white dark:border-zinc-900"></div>
                     <p class="text-xs text-zinc-400 mb-1">Last Profile Update</p>
-                    <h5 class="font-bold text-sm">December 2025</h5>
+                    <h5 class="font-bold text-sm">{{ $employee['updated_at'] }}</h5>
                 </div>
             </div>
         </div>

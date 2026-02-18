@@ -56,9 +56,9 @@ $baseClass = "
             <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Administration</span>
         </div>
 
-        {{-- <a href="{{ route('admin.index') }}" class="{{ $baseClass }} {{ request()->routeIs('admin.index') ? $activeClass : $inactiveClass }}">
+        <a href="{{ route('admin.index') }}" class="{{ $baseClass }} {{ request()->routeIs('admin.index') ? $activeClass : $inactiveClass }}">
             <i class="fas fa-th-large w-5"></i> Dashboard
-        </a> --}}
+        </a>
 
         <a href="{{ route('admin.employees') }}" class="{{ $baseClass }} {{ request()->routeIs('admin.employees') ? $activeClass : $inactiveClass }}">
             <i class="fas fa-users-cog w-5"></i> Manage Staff

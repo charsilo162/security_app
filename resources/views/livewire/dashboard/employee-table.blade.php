@@ -14,11 +14,10 @@
 
 
 
-    <div class="bg-white dark:bg-zinc-900 rounded-xl border dark:border-zinc-700 overflow-hidden">
-         <div class="overflow-x-auto -mx-6 md:mx-0">
-    <table class="min-w-full">
-        <table class="w-full text-sm">
-            <thead class="bg-zinc-50 dark:bg-zinc-800 text-zinc-500 font-semibold border-b dark:border-zinc-700">
+   <div class="bg-white dark:bg-zinc-900 rounded-xl border dark:border-zinc-700 overflow-hidden">
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-zinc-200 dark:divide-zinc-700">
+            <thead class="hidden md:table-header-group bg-zinc-50 dark:bg-zinc-800 text-zinc-500 font-semibold border-b dark:border-zinc-700">
                 <tr>
                     <th class="p-4 text-left">Employee Name</th>
                     <th class="p-4 text-left">Designation</th>
@@ -27,35 +26,42 @@
                     <th class="p-4 text-right">Actions</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="divide-y divide-zinc-200 dark:divide-zinc-800">
                 @foreach($employees as $emp)
-                <tr class="border-b dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition">
-                    {{-- <td class="p-4">
-                        <div class="font-bold">{{ $emp['full_name'] }}</div>
-                        <div class="text-xs text-zinc-400">{{ $emp['email'] }}</div>
-                    </td> --}}
-                    <td class="p-4">
-                        <a href="{{ route('admin.employees.show', $emp['uuid']) }}" class="group">
+                <tr class="flex flex-col md:table-row hover:bg-zinc-50 dark:hover:bg-zinc-800 transition p-4 md:p-0">
+                    
+                    <td class="md:p-4 py-2">
+                        <a href="{{ route('admin.employees.show', $emp['uuid']) }}" class="group block">
                             <div class="font-bold text-indigo-600 group-hover:underline">{{ $emp['full_name'] }}</div>
                             <div class="text-xs text-zinc-400">{{ $emp['email'] }}</div>
                         </a>
                     </td>
-                    <td class="p-4">{{ $emp['designation'] }}</td>
-                    <td class="p-4 text-zinc-500">{{ $emp['department'] }}</td>
-                    <td class="p-4">{{ $emp['joining_date'] }}</td>
-                   <td class="p-4 text-right flex justify-end gap-3">
+
+                    <td class="md:p-4 py-1 text-sm text-zinc-600 dark:text-zinc-300">
+                        <span class="font-semibold md:hidden text-zinc-400">Designation: </span>
+                        {{ $emp['designation'] }}
+                    </td>
+
+                    <td class="md:p-4 py-1 text-sm text-zinc-500">
+                        <span class="font-semibold md:hidden text-zinc-400">Department: </span>
+                        {{ $emp['department'] }}
+                    </td>
+
+                    <td class="md:p-4 py-1 text-sm">
+                        <span class="font-semibold md:hidden text-zinc-400">Joined: </span>
+                        {{ $emp['joining_date'] }}
+                    </td>
+
+                    <td class="md:p-4 py-3 md:text-right flex md:justify-end gap-3 border-t md:border-t-0 mt-2 md:mt-0">
                         <button wire:click="openEditModal('{{ $emp['uuid'] }}')" class="text-indigo-600 hover:underline font-medium">Edit</button>
-                        
-                        <button wire:click="deleteEmployee('{{ $emp['uuid'] }}')" class="text-red-500 hover:underline font-medium">
-                            Delete
-                        </button>
+                        <button wire:click="deleteEmployee('{{ $emp['uuid'] }}')" class="text-red-500 hover:underline font-medium">Delete</button>
                     </td>
                 </tr>
                 @endforeach
             </tbody>
         </table>
     </div>
-    </div>
+</div>
 
     @if($showModal)
             <div class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">

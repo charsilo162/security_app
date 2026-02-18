@@ -94,7 +94,7 @@ class EmployeeTable extends Component
                 'first_name'    => 'required|string|min:2',
                 'last_name'     => 'required|string|min:2',
                 'email'         => 'required|email',
-                'date_of_birth' => 'nullable|date',
+                'date_of_birth' => 'nullable|date|before_or_equal:today',
                 'gender'        => 'nullable|in:male,female,other',
                 'password'      => $this->editId ? 'nullable|min:8' : 'required|min:8',
                 // 'employee_id'   => 'required|string',
@@ -102,8 +102,9 @@ class EmployeeTable extends Component
                 'designation'   => 'required|string',
                 'department'    => 'required|string',
                 // Banking is optional but must be string if filled
-                'account_number' => 'nullable|numeric',
-                'phone' => 'nullable|numeric',
+                
+                'account_number' => 'nullable|numeric|digits_between:1,15',
+                'phone' => 'nullable|numeric|digits_between:7,15',
                 'bank_name'      => 'nullable|string',
             ];
         }
@@ -114,25 +115,26 @@ class EmployeeTable extends Component
 
         // 1. Build Multipart Payload
         $payload = [
-            ['name' => 'first_name',    'contents' => $this->first_name],
-            ['name' => 'last_name',     'contents' => $this->last_name],
-            ['name' => 'email',         'contents' => $this->email],
-            ['name' => 'phone',         'contents' => $this->phone],
-            ['name' => 'address',       'contents' => $this->address],
-            ['name' => 'gender',        'contents' => $this->gender],
-            ['name' => 'bio',           'contents' => $this->bio],
-            ['name' => 'date_of_birth', 'contents' => $this->date_of_birth],
-            ['name' => 'designation',   'contents' => $this->designation],
-            ['name' => 'department',    'contents' => $this->department],
-            ['name' => 'joining_date',  'contents' => $this->joining_date],
-            // Banking
-            ['name' => 'account_holder_name', 'contents' => $this->account_holder_name],
-            ['name' => 'account_number',      'contents' => $this->account_number],
-            ['name' => 'bank_name',           'contents' => $this->bank_name],
-            ['name' => 'branch_name',         'contents' => $this->branch_name],
-            ['name' => 'routing_number',      'contents' => $this->routing_number],
-            ['name' => 'swift_code',          'contents' => $this->swift_code],
-        ];
+                    ['name' => 'first_name',    'contents' => (string)$this->first_name],
+                    ['name' => 'last_name',     'contents' => (string)$this->last_name],
+                    ['name' => 'email',         'contents' => (string)$this->email],
+                    ['name' => 'phone',         'contents' => (string)$this->phone],
+                    ['name' => 'address',       'contents' => (string)$this->address],
+                    ['name' => 'gender',        'contents' => (string)$this->gender],
+                    ['name' => 'bio',           'contents' => (string)$this->bio],
+                    ['name' => 'date_of_birth', 'contents' => (string)$this->date_of_birth],
+                    ['name' => 'designation',   'contents' => (string)$this->designation],
+                    ['name' => 'department',    'contents' => (string)$this->department],
+                    ['name' => 'joining_date',  'contents' => (string)$this->joining_date],
+                    
+                    // Ensure these are at least empty strings so the key is sent
+                    ['name' => 'account_holder_name', 'contents' => (string)$this->account_holder_name],
+                    ['name' => 'account_number',      'contents' => (string)$this->account_number],
+                    ['name' => 'bank_name',           'contents' => (string)$this->bank_name],
+                    ['name' => 'branch_name',         'contents' => (string)$this->branch_name],
+                    ['name' => 'routing_number',      'contents' => (string)$this->routing_number],
+                    ['name' => 'swift_code',          'contents' => (string)$this->swift_code],
+                ];
 
         if ($this->editId) {
             $payload[] = ['name' => '_method', 'contents' => 'PUT'];
