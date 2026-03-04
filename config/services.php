@@ -13,6 +13,7 @@ return [
     | a conventional file to locate the various service credentials.
     |
     */
+  
 
     'postmark' => [
         'key' => env('POSTMARK_API_KEY'),
@@ -27,7 +28,9 @@ return [
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
-
+          'api' => [
+                'base_url' => env('API_BASE_URL', 'http://127.0.0.1:8001/api'),
+            ],
     'slack' => [
         'notifications' => [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),

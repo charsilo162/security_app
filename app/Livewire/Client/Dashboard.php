@@ -19,7 +19,7 @@ class Dashboard extends Component
     {
         // We fetch the dashboard summary specifically for this client
         $response = $this->api->get('stat/service-stats');
-       // dd($response['data']);
+        // dd($response['data']);
         $this->stats = $response['data'] ?? [
               "total" => 0,
             "pending_requests" => 0,

@@ -55,11 +55,22 @@
                             <span class="text-zinc-400 italic text-xs">Awaiting Admin...</span>
                         @endif
                     </td>
-                    <td class="p-5 text-right">
-                        <button class="text-zinc-400 hover:text-indigo-600 transition">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                    </td>
+                        <td class="p-5 text-right">
+                            <div class="relative inline-block">
+                                <button wire:click="openChat('{{ $req['uuid'] }}')" 
+                                    class="flex items-center gap-2 px-3 py-1.5 bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 rounded-lg text-xs font-bold transition">
+                                    <i class="fas fa-comment-dots"></i> Chat
+                                </button>
+
+                                {{-- CLIENT NOTIFICATION BADGE --}}
+                                @if(isset($req['unread_count']) && $req['unread_count'] > 0)
+                                    <span class="absolute -top-1 -right-1 flex h-3 w-3">
+                                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                        <span class="relative inline-flex rounded-full h-3 w-3 bg-red-600 border border-white dark:border-zinc-900"></span>
+                                    </span>
+                                @endif
+                            </div>
+                        </td>
                 </tr>
                 @empty
                 <tr>
@@ -77,4 +88,32 @@
             </tbody>
         </table>
     </div>
+    
+            {{-- CLIENT CHAT MODAL --}}
+        @if($showChatModal && $selectedRequest)
+        <div class="fixed inset-0 z-[60] flex items-center justify-center p-4">
+            <div class="absolute inset-0 bg-zinc-900/60 backdrop-blur-sm" wire:click="$set('showChatModal', false)"></div>
+            
+            <div class="relative bg-white dark:bg-zinc-900 w-full max-w-lg rounded-[2.5rem] shadow-2xl overflow-hidden">
+                
+                <div class="p-6 border-b dark:border-zinc-800 flex justify-between items-center bg-zinc-50 dark:bg-zinc-800/50">
+                    <div>
+                        <h3 class="text-lg font-black text-zinc-900 dark:text-white uppercase">Support & Mission Chat</h3>
+                        <p class="text-[10px] text-zinc-500 font-bold uppercase">{{ $selectedRequest['title'] }}</p>
+                    </div>
+                    <button wire:click="$set('showChatModal', false)" class="text-zinc-400 hover:text-red-600 transition">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <div class="p-4">
+                    @livewire('chat.mission-chat', ['missionId' => $selectedRequest['uuid']], key($selectedRequest['uuid']))
+                </div>
+                
+                <div class="p-4 bg-zinc-50 dark:bg-zinc-800/50 text-center">
+                    <p class="text-[9px] text-zinc-400 font-bold uppercase tracking-widest">Chatting with Security HQ</p>
+                </div>
+            </div>
+        </div>
+        @endif
 </div>

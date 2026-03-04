@@ -39,7 +39,7 @@ class ClientTable extends Component
         if (isset($response['status']) && $response['status'] === 403) {
             return $this->dispatch('notify', type: 'error', message: 'Access Denied.');
         }
-// dd($response);
+    // dd($response);
         $client = $response['data'];
         $this->first_name = $client['first_name'];
         $this->last_name  = $client['last_name'];
@@ -116,7 +116,7 @@ class ClientTable extends Component
             'per_page' => $this->perPage,
             'page' => $this->getPage(),
         ]);
-// dd($response);
+    // dd($response);
         return view('livewire.dashboard.client-table', [
             'clients' => $response['data'] ?? [],
             'total'   => $response['meta']['total'] ?? 0

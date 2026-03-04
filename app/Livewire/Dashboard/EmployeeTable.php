@@ -115,13 +115,14 @@ class EmployeeTable extends Component
 
         // 1. Build Multipart Payload
         $payload = [
+                     ['name' => 'bio',           'contents' => (string)$this->bio],
                     ['name' => 'first_name',    'contents' => (string)$this->first_name],
                     ['name' => 'last_name',     'contents' => (string)$this->last_name],
                     ['name' => 'email',         'contents' => (string)$this->email],
                     ['name' => 'phone',         'contents' => (string)$this->phone],
                     ['name' => 'address',       'contents' => (string)$this->address],
                     ['name' => 'gender',        'contents' => (string)$this->gender],
-                    ['name' => 'bio',           'contents' => (string)$this->bio],
+                   
                     ['name' => 'date_of_birth', 'contents' => (string)$this->date_of_birth],
                     ['name' => 'designation',   'contents' => (string)$this->designation],
                     ['name' => 'department',    'contents' => (string)$this->department],

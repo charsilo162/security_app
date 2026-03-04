@@ -9,6 +9,7 @@ use App\Livewire\Client\Dashboard;
 use App\Livewire\Client\MyRequests;
 use App\Livewire\Client\RequestService;
 use App\Livewire\Dashboard\ClientTable;
+use App\Livewire\Dashboard\DirectChat;
 use App\Livewire\Dashboard\EmployeeTable;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\Dashboard\LeaveManagement; // Admin View
@@ -101,6 +102,8 @@ Route::middleware(['sessionauth'])->group(function () {
         
         // Duty Roster (The one we just built)
         Route::get('/roster', DutyRoster::class)->name('roster');
+        Route::get('/messages/{targetUuid?}', DirectChat::class)
+        ->name('messages');
 
         // Leave Portal (Your Old Route migrated here)
         Route::get('/my-leaves', function () {
@@ -112,4 +115,6 @@ Route::middleware(['sessionauth'])->group(function () {
         })->name('employees.show');
         
     });
+    Route::get('/admin/messages/{targetUuid?}', DirectChat::class)
+    ->name('admin.direct-chat');
 });

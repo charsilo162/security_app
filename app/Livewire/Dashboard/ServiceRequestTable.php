@@ -14,42 +14,61 @@ class ServiceRequestTable extends Component
     public array $selectedEmployees = []; // Array of IDs to be assigned
     public $availableEmployees = [];      // List of guards fetched from API
     public $adminRemarks = '';
-    
+    public $employeeSearch = '';
+    public $showChatModal = false;
 
+    protected $messages = [
+    'selectedEmployees.required' => 'Please select at least one guard to assign.',
+    'selectedEmployees.min' => 'Please select at least one guard to assign.',
+    'selectedEmployees.max' => 'You cannot assign more than the requested number of guards.',
+    ];
+ 
     /**
      * Open the assignment modal and fetch available personnel
      */
+    public function openChat($uuid) 
+        {
+            // We fetch the request just to get the title/details for the modal header
+            $response = $this->api->get("admin/requests/{$uuid}");
+            
+            if (isset($response['data'])) {
+                $this->selectedRequest = $response['data']; 
+                // We use the UUID as the missionId for the chat component
+                $this->showChatModal = true;
+            }
+        }
+    public function fetchEmployees()
+        {
+            $params = [
+                'per_page' => 100,
+            ];
+
+            if (!empty($this->employeeSearch)) {
+                $params['search'] = $this->employeeSearch;
+            }
+
+            $empResponse = $this->api->get("employees", $params);
+
+            $this->availableEmployees = $empResponse['data'] ?? [];
+        }
+
+            public function updatedEmployeeSearch()
+            {
+                logger('Search updated: ' . $this->employeeSearch);
+
+                $this->fetchEmployees();
+            }
     public function openAssignModal($uuid)
-    {
-        $this->reset(['selectedEmployees', 'adminRemarks']);
-        
-        // 1. Fetch the specific request details
-        $response = $this->api->get("admin/requests/{$uuid}");
-       // dd( $response);
-        $this->selectedRequest = $response['data'];
+        {
+            $this->reset(['selectedEmployees', 'adminRemarks', 'employeeSearch']);
 
-        // 2. Fetch all employees to choose from
-        // In a real scenario, you'd filter by 'available' status
-        $empResponse = $this->api->get("employees", ['per_page' => 100]);
-        $this->availableEmployees = $empResponse['data'] ?? [];
+            $response = $this->api->get("admin/requests/{$uuid}");
+            $this->selectedRequest = $response['data'];
 
-        $this->showModal = true;
-    }
-    // public function updateRequestStatus($uuid, $newStatus)
-    //     {
-    //         // Hits the PATCH /admin/requests/{uuid}/status endpoint in your API
-    //         $response = $this->api->patch("admin/requests/{$uuid}/status", [
-    //             'status' => $newStatus,
-    //             'remarks' => "Status manually updated to {$newStatus} by Admin."
-    //         ]);
+            $this->fetchEmployees(); // load initial employees
 
-    //         if (isset($response['errors'])) {
-    //             $this->dispatch('notify', type: 'error', message: 'Status update failed.');
-    //             return;
-    //         }
-
-    //         $this->dispatch('notify', type: 'success', message: "Mission marked as " . ucfirst($newStatus));
-    //     }
+            $this->showModal = true;
+        }
 
         public function updateRequestStatus($uuid, $newStatus)
     {
@@ -70,30 +89,41 @@ class ServiceRequestTable extends Component
     }
 
     public function confirmAssignment()
-    {
-        $this->validate([
-            'selectedEmployees' => 'required|array|min:1',
-        ]);
+        {
+            $requiredCount = $this->selectedRequest['required_staff_count'] ?? 0;
 
-        $payload = [
-            'employee_ids' => $this->selectedEmployees,
-            'remarks' => $this->adminRemarks,
-            'status' => 'assigned'
-        ];
+            $this->validate([
+                'selectedEmployees' => [
+                    'required',
+                    'array',
+                    'min:1',
+                    'max:' . $requiredCount,
+                ],
+            ], [
+                'selectedEmployees.required' => 'Please select at least one guard to assign.',
+                'selectedEmployees.min' => 'Please select at least one guard to assign.',
+                'selectedEmployees.max' => "You cannot assign more than {$requiredCount} guards as per the client's request.",
+            ]);
 
-        $response = $this->api->patch("admin/requests/{$this->selectedRequest['uuid']}/assign", $payload);
+            $payload = [
+                'employee_ids' => $this->selectedEmployees,
+                'remarks' => $this->adminRemarks,
+                'status' => 'assigned'
+            ];
 
-        if (isset($response['errors'])) {
-            $this->dispatch('notify', type: 'error', message: 'Assignment failed.');
-            return;
+            $response = $this->api->patch("admin/requests/{$this->selectedRequest['uuid']}/assign", $payload);
+
+            if (isset($response['errors'])) {
+                $this->dispatch('notify', type: 'error', message: 'Assignment failed.');
+                return;
+            }
+
+            $this->showModal = false;
+            // Reset selected employees so they don't stay checked for the next request
+            $this->reset(['selectedEmployees', 'adminRemarks']); 
+            
+            $this->dispatch('notify', type: 'success', message: 'Security Personnel Assigned!');
         }
-
-        $this->showModal = false;
-        // Reset selected employees so they don't stay checked for the next request
-        $this->reset(['selectedEmployees', 'adminRemarks']); 
-        
-        $this->dispatch('notify', type: 'success', message: 'Security Personnel Assigned!');
-    }
     /**
  * Quick action to approve a request before assignment
  */
@@ -111,33 +141,6 @@ class ServiceRequestTable extends Component
 
             $this->dispatch('notify', type: 'success', message: 'Mission Approved!');
         }
-            /**
-     * Submit the assignment to the Backend
-     */
-    // public function confirmAssignment()
-    // {
-    //     $this->validate([
-    //         'selectedEmployees' => 'required|array|min:1',
-    //     ]);
-
-    //     $payload = [
-    //         'employee_ids' => $this->selectedEmployees,
-    //         'remarks' => $this->adminRemarks,
-    //         'status' => 'assigned'
-    //     ];
-
-    //     // Using the PATCH route we defined in the backend
-    //     $response = $this->api->patch("admin/requests/{$this->selectedRequest['uuid']}/assign", $payload);
-
-    //     if (isset($response['errors'])) {
-    //         $this->dispatch('notify', type: 'error', message: 'Assignment failed. Check availability.');
-    //         return;
-    //     }
-
-    //     $this->dispatch('notify', type: 'success', message: 'Security Personnel Assigned!');
-    //     $this->showModal = false;
-    // }
-  // Inside ServiceRequestTable.php
 
     // This hooks into Livewire's lifecycle to reset page on search update
     public function updatingSearch()
@@ -152,7 +155,7 @@ class ServiceRequestTable extends Component
                 'per_page' => $this->perPage,
                 'page'     => $this->getPage(), // Handled by WithPagination inside ApiTableActions
             ]);
-
+         
             return view('livewire.dashboard.service-request-table', [
                 'requests' => $response['data'] ?? [],
                 'meta'     => $response['meta'] ?? [], // Meta contains links for pagination

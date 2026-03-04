@@ -20,7 +20,27 @@ class EmployeeDetail extends Component
         $this->uuid = $uuid;
         $this->loadEmployee();
     }
+public function openDirectChat($employeeUuid)
+{
+   // dd("Attempting to start chat with employee UUID: {$employeeUuid}");
+    // Check if user_id actually exists
+    if (!isset($this->employee['user_id'])) {
+        dd($this->employee);
+        session()->flash('error', 'User ID not found for this employee.');
+        return;
+    }
 
+    $response = $this->api->post('chat/start', [
+        'employee_user_id' => $this->employee['user_id'] 
+    ]);
+        // dd( $response);
+    if (isset($response['data']['uuid'])) {
+        return redirect()->route('admin.direct-chat', ['targetUuid' => $response['data']['uuid']]);
+    } else {
+        // Debug what the API actually said
+        logger($response); 
+    }
+}
     public function loadEmployee()
     {
         $response = $this->api->get("employees/{$this->uuid}");

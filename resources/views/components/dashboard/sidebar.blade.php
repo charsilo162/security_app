@@ -110,25 +110,36 @@ $baseClass = "
 
     {{-- 3. EMPLOYEE SECTION (prefix: me, name: employee.) --}}
     @if($userType === 'employee')
-    @php
-        $userTID = session('user.profile_uuid');
-    @endphp
+        @php
+            $userTID = session('user.profile_uuid');
+        @endphp
         <div class="pb-2 px-4 mt-2">
             <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Guard Portal</span>
         </div>
+
+        {{-- New: Messages Link --}}
+        <a href="{{ route('employee.messages') }}" class="{{ $baseClass }} {{ request()->routeIs('employee.messages') ? $activeClass : $inactiveClass }}">
+            <div class="flex items-center justify-between w-full">
+                <div class="flex items-center">
+                    <i class="fas fa-comment-dots w-5"></i> 
+                    <span>Messages</span>
+                </div>
+                {{-- Unread Badge (Optional: We can bind this to a global Livewire property later) --}}
+                <span id="unread-count" class="hidden bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full">!</span>
+            </div>
+        </a>
 
         <a href="{{ route('employee.roster') }}" class="{{ $baseClass }} {{ request()->routeIs('employee.roster') ? $activeClass : $inactiveClass }}">
             <i class="fas fa-calendar-alt w-5"></i> Duty Roster
         </a>
 
-        {{-- FIXED: Matches name('employee.')...name('leaves.my-history') --}}
         <a href="{{ route('employee.leaves.my-history') }}" class="{{ $baseClass }} {{ request()->routeIs('employee.leaves.my-history') ? $activeClass : $inactiveClass }}">
             <i class="fas fa-clock w-5"></i> My Leaves
         </a>
-        <a href="{{ route('employee.employees.show', $userTID) }}" class="{{ $baseClass }} {{ request()->routeIs('client.my-requests') ? $activeClass : $inactiveClass }}">
-            <i class="fas fa-history w-5"></i> Employee Details
+
+        <a href="{{ route('employee.employees.show', $userTID) }}" class="{{ $baseClass }} {{ request()->routeIs('employee.employees.show') ? $activeClass : $inactiveClass }}">
+            <i class="fas fa-user-shield w-5"></i> My Profile
         </a>
-      
     @endif
 
     {{-- LOGOUT --}}
